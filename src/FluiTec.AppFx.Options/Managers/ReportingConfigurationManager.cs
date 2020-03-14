@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using FluiTec.AppFx.Options.Attributes;
 using Microsoft.Extensions.Configuration;
 
 namespace FluiTec.AppFx.Options.Managers
@@ -30,6 +31,10 @@ namespace FluiTec.AppFx.Options.Managers
         /// <value>The property report.</value>
         public string PropertyReport { get; set; }
 
+        /// <summary>Gets or sets the redacted value replacement.</summary>
+        /// <value>The redacted value replacement.</value>
+        public string RedactedValueReplacement { get; set; }
+
         #region Constructors
 
         /// <summary>Initializes a new instance of the <see cref="ReportingConfigurationManager"/> class.</summary>
@@ -45,6 +50,7 @@ namespace FluiTec.AppFx.Options.Managers
             ExtractSettingsReport =  "[ConfigurationSettings of '{0}':]";
             NullSettingsReport =     "-> No settings provided.";
             PropertyReport =         "-> '{0}' = '{1}'";
+            RedactedValueReplacement = "** REDACTED **";
         }
 
         #endregion
@@ -78,7 +84,8 @@ namespace FluiTec.AppFx.Options.Managers
         /// returning that instance. (no cache involved)
         /// This method should only be used for direct inspection of certain
         /// options, since it won't register any settings to any kind of
-        /// ServiceCollection. Will also report extracted settings.
+        /// ServiceCollection. Will also report extracted setting.
+        /// Report will redact properties marked with <see cref="ConfigurationSecretAttribute"/>.
         /// </remarks>
         public override TSettings ExtractSettings<TSettings>()
         {
@@ -91,7 +98,8 @@ namespace FluiTec.AppFx.Options.Managers
                     .Where(pi => pi.GetGetMethod() != null);
                 foreach (var p in propertiesWithGetters)
                 {
-                    ReportAction(string.Format(PropertyReport, p.Name, p.GetValue(settings)));
+                    var isSecret = p.GetCustomAttributes(true).SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) != null;
+                    ReportAction(string.Format(PropertyReport, p.Name, isSecret ? RedactedValueReplacement : p.GetValue(settings)));
                 }
             }
             else

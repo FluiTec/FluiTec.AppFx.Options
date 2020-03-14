@@ -91,5 +91,41 @@ namespace FluiTec.AppFx.Options.Tests
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting), stringSetting)));
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting2), stringSetting2)));
         }
+
+        [TestMethod]
+        public void RedactsSimpleSecrets()
+        {
+            _reportEntries.Clear();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(SecretOption)}:{nameof(SecretOption.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var setting = manager.ExtractSettings<SecretOption>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(SecretOption.StringSetting), manager.RedactedValueReplacement)));
+        }
+
+        [TestMethod]
+        public void RedactsInheritedSecrets()
+        {
+            _reportEntries.Clear();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(InheritedSecretOption)}:{nameof(InheritedSecretOption.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var setting = manager.ExtractSettings<InheritedSecretOption>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedSecretOption.StringSetting), manager.RedactedValueReplacement)));
+        }
     }
 }
