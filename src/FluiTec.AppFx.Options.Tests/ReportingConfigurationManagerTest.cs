@@ -25,17 +25,71 @@ namespace FluiTec.AppFx.Options.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void ThrowsOnMissingReportAction()
         {
+            _reportEntries.Clear();
             var unused = new ReportingConfigurationManager(GetEmptyConfiguration(), null);
         }
 
         [TestMethod]
         public void CanReportKeyNaming()
         {
+            _reportEntries.Clear();
             var config = GetEmptyConfiguration();
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
             var key = manager.GetKeyByType(typeof(OptionWithDefaultKey));
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.ConfigurationKeyReport, key)));
+        }
+
+        [TestMethod]
+        public void CanReportEmptySettings()
+        {
+            _reportEntries.Clear();
+            var config = GetEmptyConfiguration();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var settings = manager.ExtractSettings<OptionWithDefaultKey>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.ExtractSettingsReport, typeof(OptionWithDefaultKey).Name)));
+        }
+
+        [TestMethod]
+        public void CanReportSimpleSettings()
+        {
+            _reportEntries.Clear();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var setting = manager.ExtractSettings<OptionWithDefaultKey>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(OptionWithDefaultKey.StringSetting), stringSetting)));
+        }
+
+        [TestMethod]
+        public void CanReportInheritedSettings()
+        {
+            _reportEntries.Clear();
+            const string stringSetting = "test";
+            const string stringSetting2 = "test2";
+
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(InheritedOption)}:{nameof(InheritedOption.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(InheritedOption)}:{nameof(InheritedOption.StringSetting2)}", stringSetting2)
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var setting = manager.ExtractSettings<InheritedOption>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting), stringSetting)));
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting2), stringSetting2)));
         }
     }
 }
