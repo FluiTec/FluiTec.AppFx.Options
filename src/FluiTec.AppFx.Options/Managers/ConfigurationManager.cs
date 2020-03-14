@@ -139,7 +139,7 @@ namespace FluiTec.AppFx.Options.Managers
             if (configurationKey == string.Empty) throw new ArgumentException("Must not be empty", nameof(configurationKey));
 
             // adds settings as IOptions<TSetting>, IOptionsSnapshot<TSetting>, etc.
-            services.Configure<TSettings>(settings => { Configuration.GetSection(configurationKey).Bind(settings); });
+            services.Configure<TSettings>(Configuration.GetSection(configurationKey));
 
             // adds settings as TSetting
             services.AddSingleton(sp => sp.GetService<IOptions<TSettings>>().Value);
