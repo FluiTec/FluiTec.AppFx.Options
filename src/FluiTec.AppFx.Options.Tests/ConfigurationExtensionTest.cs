@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,17 @@ namespace FluiTec.AppFx.Options.Tests
 
             var serviceProvider = services.BuildServiceProvider();
             Assert.AreEqual(stringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MissingSettingException))]
+        public void ThrowsOnUnconfiguredSetting()
+        {
+            var services = new ServiceCollection();
+            var builder = new ConfigurationBuilder();
+            var config = builder.Build();
+            var manager = new ReportingConfigurationManager(config, s => { });
+            services.Configure<OptionWithDefaultKey>(manager, true);
         }
     }
 }
