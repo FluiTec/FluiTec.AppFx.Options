@@ -144,7 +144,7 @@ namespace FluiTec.AppFx.Options.Tests
                 });
             var config = builder.Build();
             var manager = GetManager(config);
-            var settings = manager.Configure<OptionWithDefaultKey>(services);
+            var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
             Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
@@ -162,7 +162,7 @@ namespace FluiTec.AppFx.Options.Tests
                 });
             var config = builder.Build();
             var manager = GetManager(config);
-            var settings = manager.Configure<OptionWithDefaultKey>(services);
+            var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
             Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsSnapshot<OptionWithDefaultKey>>().Value.StringSetting);
@@ -180,7 +180,7 @@ namespace FluiTec.AppFx.Options.Tests
                 });
             var config = builder.Build();
             var manager = GetManager(config);
-            var settings = manager.Configure<OptionWithDefaultKey>(services);
+            var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
             Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsMonitor<OptionWithDefaultKey>>().CurrentValue.StringSetting);

@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace FluiTec.AppFx.Options.Tests
 {
     [TestClass]
-    public class ReportingConfigurationManagerTest : ConfigurationManagerTest
+    public class ReportingConfigurationManagerTest : ValidatingConfigurationManagerTest
     {
         private readonly List<string> _reportEntries = new List<string>();
 

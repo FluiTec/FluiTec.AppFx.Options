@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentValidation;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
 
@@ -8,6 +9,15 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>Simple extension to simplify using the ConfigurationManager.</summary>
     public static class ConfigurationExtension
     {
+        /// <summary>Configures the validator.</summary>
+        /// <typeparam name="TSettings">The type of the settings.</typeparam>
+        /// <param name="manager">The manager.</param>
+        /// <param name="validator">The validator.</param>
+        public static void ConfigureValidator<TSettings>(this ValidatingConfigurationManager manager, IValidator<TSettings> validator)
+        {
+            manager.Validators.Add(typeof(TSettings), validator);
+        }
+
         /// <summary>Configures the specified manager.</summary>
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="services">The services.</param>

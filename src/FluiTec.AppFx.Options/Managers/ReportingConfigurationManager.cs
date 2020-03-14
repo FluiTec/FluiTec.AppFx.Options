@@ -7,7 +7,7 @@ namespace FluiTec.AppFx.Options.Managers
 {
     /// <summary>A reporting ConfigurationManager.</summary>
     /// <seealso cref="FluiTec.AppFx.Options.Managers.ConfigurationManager" />
-    public class ReportingConfigurationManager : ConfigurationManager
+    public class ReportingConfigurationManager : ValidatingConfigurationManager
     {
         #region Fields
 
