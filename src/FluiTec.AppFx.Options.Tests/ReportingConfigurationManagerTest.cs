@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using FluiTec.AppFx.Options.Managers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FluiTec.AppFx.Options.Tests
@@ -126,6 +128,26 @@ namespace FluiTec.AppFx.Options.Tests
 
             var setting = manager.ExtractSettings<InheritedSecretOption>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedSecretOption.StringSetting), manager.RedactedValueReplacement)));
+        }
+        
+        [TestMethod]
+        public void TestServiceCollectionReporting()
+        {
+            _reportEntries.Clear();
+
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var settings = manager.Configure<OptionWithDefaultKey>(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
         }
     }
 }

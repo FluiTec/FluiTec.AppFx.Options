@@ -2,6 +2,7 @@
 using System.Linq;
 using FluiTec.AppFx.Options.Attributes;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FluiTec.AppFx.Options.Managers
 {
@@ -77,6 +78,9 @@ namespace FluiTec.AppFx.Options.Managers
 
         /// <summary>Extracts the settings.</summary>
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
+        /// <param name="configurationKey"></param>
+        /// <exception cref="ArgumentException">configurationKey empty</exception>
+        /// <exception cref="ArgumentNullException">configurationKey</exception>
         /// <returns>The settings.</returns>
         /// <remarks>
         /// Will get the required section as indicated by <see cref="GetKeyByType"/>
@@ -87,9 +91,9 @@ namespace FluiTec.AppFx.Options.Managers
         /// ServiceCollection. Will also report extracted setting.
         /// Report will redact properties marked with <see cref="ConfigurationSecretAttribute"/>.
         /// </remarks>
-        public override TSettings ExtractSettings<TSettings>()
+        public override TSettings ExtractSettings<TSettings>(string configurationKey)
         {
-            var settings =  base.ExtractSettings<TSettings>();
+            var settings =  base.ExtractSettings<TSettings>(configurationKey);
             ReportAction(string.Format(ExtractSettingsReport, typeof(TSettings).Name));
             if (settings != null)
             {
