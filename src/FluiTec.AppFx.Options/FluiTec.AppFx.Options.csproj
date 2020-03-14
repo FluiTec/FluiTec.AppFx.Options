@@ -11,6 +11,9 @@
     <None Include="..\..\LICENSE.md">
       <Pack>True</Pack>
     </None>
+    <None Include="..\..\THIRD_PARTY_LICENSES.md">
+      <Pack>True</Pack>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
