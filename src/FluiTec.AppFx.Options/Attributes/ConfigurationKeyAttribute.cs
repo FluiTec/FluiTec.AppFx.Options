@@ -16,11 +16,6 @@ namespace FluiTec.AppFx.Options.Attributes
 
         #region Constructors
 
-        /// <summary>	Default constructor. </summary>
-        public ConfigurationKeyAttribute()
-        {
-        }
-
         /// <summary>	Constructor. </summary>
         /// <param name="name">	The name of the configuration. </param>
         public ConfigurationKeyAttribute(string name)

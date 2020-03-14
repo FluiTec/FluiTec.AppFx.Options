@@ -95,7 +95,7 @@ namespace FluiTec.AppFx.Options.Tests
                 });
             var config = builder.Build();
             var manager = GetManager(config);
-            var setting = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
+            var unused = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
         }
 
         [TestMethod]
@@ -112,7 +112,7 @@ namespace FluiTec.AppFx.Options.Tests
                 });
             var config = builder.Build();
             var manager = GetManager(config);
-            var setting = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
+            var unused = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
         }
 
         [TestMethod]

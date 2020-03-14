@@ -50,7 +50,7 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
 
-            var settings = manager.ExtractSettings<OptionWithDefaultKey>();
+            var unused = manager.ExtractSettings<OptionWithDefaultKey>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.ExtractSettingsReport, typeof(OptionWithDefaultKey).Name)));
         }
 
@@ -68,7 +68,7 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
 
-            var setting = manager.ExtractSettings<OptionWithDefaultKey>();
+            var unused = manager.ExtractSettings<OptionWithDefaultKey>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(OptionWithDefaultKey.StringSetting), stringSetting)));
         }
 
@@ -89,7 +89,7 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
 
-            var setting = manager.ExtractSettings<InheritedOption>();
+            var unused = manager.ExtractSettings<InheritedOption>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting), stringSetting)));
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedOption.StringSetting2), stringSetting2)));
         }
@@ -108,7 +108,7 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
 
-            var setting = manager.ExtractSettings<SecretOption>();
+            var unused = manager.ExtractSettings<SecretOption>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(SecretOption.StringSetting), manager.RedactedValueReplacement)));
         }
 
@@ -126,7 +126,7 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config) as ReportingConfigurationManager;
             Assert.IsNotNull(manager);
 
-            var setting = manager.ExtractSettings<InheritedSecretOption>();
+            var unused = manager.ExtractSettings<InheritedSecretOption>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport, nameof(InheritedSecretOption.StringSetting), manager.RedactedValueReplacement)));
         }
         

@@ -2,7 +2,6 @@
 using System.Linq;
 using FluiTec.AppFx.Options.Attributes;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace FluiTec.AppFx.Options.Managers
 {
