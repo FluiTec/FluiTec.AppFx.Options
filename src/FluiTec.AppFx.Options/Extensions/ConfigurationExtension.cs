@@ -2,6 +2,8 @@
 using FluentValidation;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
+using Microsoft.Extensions.Options;
+using ValidationException = FluiTec.AppFx.Options.Exceptions.ValidationException;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
@@ -9,6 +11,22 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>Simple extension to simplify using the ConfigurationManager.</summary>
     public static class ConfigurationExtension
     {
+        public static void UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
+        {
+            foreach (var settingsType in manager.Validators.Keys)
+            {
+                var monitorType = typeof(IOptionsMonitor<>).MakeGenericType(settingsType);
+                var monitor = serviceProvider.GetService(monitorType) as IOptionsMonitor<object>;
+
+                monitor.OnChange(o =>
+                {
+                    var result = manager.Validators[o.GetType()].Validate(o);
+                    if (!result.IsValid)
+                        throw new ValidationException(result, o.GetType(), "Changed variable caused ValidationFailure.");
+                });
+            }
+        }
+
         /// <summary>Configures the validator.</summary>
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="manager">The manager.</param>

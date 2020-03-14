@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
 using FluiTec.AppFx.Options.Tests.Validators;
@@ -33,6 +35,31 @@ namespace FluiTec.AppFx.Options.Tests
             
             manager.ConfigureValidator(new OptionWithDefaultKeyValidator());
             var unused = services.Configure<OptionWithDefaultKey>(manager);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(AggregateException))] // aggregate-exception instead of ValidationException
+        public void ThrowsOnChangedInvalidSetting()
+        {
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ValidatingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            manager.ConfigureValidator(new OptionWithDefaultKeyValidator());
+            var unused = services.Configure<OptionWithDefaultKey>(manager);
+
+            var sp = services.BuildServiceProvider();
+            sp.UseSettingsValidator(manager);
+
+            config.Providers.Single().Set($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", string.Empty);
+            config.Reload();
         }
     }
 }
