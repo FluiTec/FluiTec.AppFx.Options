@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using FluiTec.AppFx.Options.Attributes;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace FluiTec.AppFx.Options.Managers
 {
@@ -12,6 +14,7 @@ namespace FluiTec.AppFx.Options.Managers
     /// Provides:
     /// a) Naming of ConfigurationKeys (cached)
     /// b) Extraction of Options from an IConfigurationRoot
+    /// c) Configuration of a ServiceCollection
     /// </remarks>
     public class ConfigurationManager
     {
@@ -54,13 +57,8 @@ namespace FluiTec.AppFx.Options.Managers
             // return cached key if available
             if (ConfigurationKeys.ContainsKey(type)) return ConfigurationKeys[type];
 
-            // try to find ConfigurationKeyAttribute
-            var attribute =
-                type.GetTypeInfo().GetCustomAttributes(typeof(ConfigurationKeyAttribute)).SingleOrDefault() as
-                    ConfigurationKeyAttribute;
-
             // add key to cache
-            ConfigurationKeys.Add(type, attribute != null ? attribute.Name : type.Name);
+            ConfigurationKeys.Add(type, type.GetTypeInfo().GetCustomAttributes(typeof(ConfigurationKeyAttribute)).SingleOrDefault() is ConfigurationKeyAttribute attribute ? attribute.Name : type.Name);
 
             // return key
             return ConfigurationKeys[type];
@@ -84,9 +82,69 @@ namespace FluiTec.AppFx.Options.Managers
         public virtual TSettings ExtractSettings<TSettings>() where TSettings : class, new()
         {
             var key = GetKeyByType(typeof(TSettings));
-            var section = Configuration.GetSection(key);
+            return ExtractSettings<TSettings>(key);
+        }
+
+        /// <summary>Extracts the settings.</summary>
+        /// <typeparam name="TSettings">The type of the settings.</typeparam>
+        /// <param name="configurationKey"></param>
+        /// <exception cref="ArgumentException">configurationKey empty</exception>
+        /// <exception cref="ArgumentNullException">configurationKey</exception>
+        /// <returns>The settings.</returns>
+        /// <remarks>
+        /// Will get the required section as indicated by <see cref="configurationKey"/>
+        /// and bind a new instance of <see cref="TSettings"/> to the section
+        /// returning that instance. (no cache involved)
+        /// This method should only be used for direct inspection of certain
+        /// options, since it won't register any settings to any kind of
+        /// ServiceCollection.
+        /// </remarks>
+        public virtual TSettings ExtractSettings<TSettings>(string configurationKey) where TSettings : class, new()
+        {
+            if (configurationKey == null) throw new ArgumentNullException(nameof(configurationKey));
+            if (configurationKey == string.Empty) throw new ArgumentException("Must not be empty", nameof(configurationKey));
+
+            var section = Configuration.GetSection(configurationKey);
             var settings = section.Get<TSettings>();
             return settings;
+        }
+
+        #endregion
+
+        #region Configuration
+
+        /// <summary>Configures the specified services.</summary>
+        /// <typeparam name="TSettings">The type of the settings.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <returns>The extracted settings.</returns>
+        /// <exception cref="System.ArgumentNullException">services or  configurationKey</exception>
+        /// <exception cref="System.ArgumentException">Must not be empty - configurationKey</exception>
+        public virtual TSettings Configure<TSettings>(IServiceCollection services) where TSettings : class, new()
+        {
+            return Configure<TSettings>(services, GetKeyByType(typeof(TSettings)));
+        }
+
+        /// <summary>Configures the specified services.</summary>
+        /// <typeparam name="TSettings">The type of the settings.</typeparam>
+        /// <param name="services">The services.</param>
+        /// <param name="configurationKey">The configuration key.</param>
+        /// <returns>The extracted settings.</returns>
+        /// <exception cref="System.ArgumentNullException">services or  configurationKey</exception>
+        /// <exception cref="System.ArgumentException">Must not be empty - configurationKey</exception>
+        public virtual TSettings Configure<TSettings>(IServiceCollection services, string configurationKey)
+            where TSettings : class, new()
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configurationKey == null) throw new ArgumentNullException(nameof(configurationKey));
+            if (configurationKey == string.Empty) throw new ArgumentException("Must not be empty", nameof(configurationKey));
+
+            // adds settings as IOptions<TSetting>, IOptionsSnapshot<TSetting>, etc.
+            services.Configure<TSettings>(settings => { Configuration.GetSection(configurationKey).Bind(settings); });
+
+            // adds settings as TSetting
+            services.AddSingleton(sp => sp.GetService<IOptions<TSettings>>().Value);
+
+            return ExtractSettings<TSettings>(configurationKey);
         }
 
         #endregion

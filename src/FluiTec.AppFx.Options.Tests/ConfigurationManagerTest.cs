@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluiTec.AppFx.Options.Managers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FluiTec.AppFx.Options.Tests
@@ -77,6 +81,111 @@ namespace FluiTec.AppFx.Options.Tests
             var manager = GetManager(config);
             var setting = manager.ExtractSettings<OptionWithDefaultKey>();
             Assert.AreEqual(stringSetting, setting.StringSetting);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ThrowsOnNullConfigurationKey()
+        {
+            const string sectionKey = null;
+            const string stringSetting = "test";
+
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var setting = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ThrowsOnEmptyConfigurationKey()
+        {
+            const string sectionKey = "";
+            const string stringSetting = "test";
+
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var setting = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
+        }
+
+        [TestMethod]
+        public void CanExtractSettingsWithManualKey()
+        {
+            const string sectionKey = "MyKey";
+            const string stringSetting = "test";
+            
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var setting = manager.ExtractSettings<OptionWithDefaultKey>(sectionKey);
+            Assert.AreEqual(stringSetting, setting.StringSetting);
+        }
+
+        [TestMethod]
+        public void TestServiceCollectionOptions()
+        {
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var settings = manager.Configure<OptionWithDefaultKey>(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+        }
+
+        [TestMethod]
+        public void TestServiceCollectionOptionsSnapshot()
+        {
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var settings = manager.Configure<OptionWithDefaultKey>(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsSnapshot<OptionWithDefaultKey>>().Value.StringSetting);
+        }
+        
+        [TestMethod]
+        public void TestServiceCollectionOptionsMonitor()
+        {
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config);
+            var settings = manager.Configure<OptionWithDefaultKey>(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsMonitor<OptionWithDefaultKey>>().CurrentValue.StringSetting);
         }
     }
 }
