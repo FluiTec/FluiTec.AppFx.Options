@@ -14,7 +14,7 @@ before_script:
 build:
     stage: build
     script:
-        - "dotnet build"
+        - "dotnet build -f netstandard2.0"
         
 test:
     stage: test
