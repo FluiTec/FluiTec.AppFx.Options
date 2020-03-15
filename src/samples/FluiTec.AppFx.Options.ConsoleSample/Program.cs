@@ -23,9 +23,10 @@ namespace FluiTec.AppFx.Options.ConsoleSample
             var manager = new ConsoleReportingConfigurationManager(config);
             var services = new ServiceCollection();
             services.Configure<ApplicationSettings>(manager);
+            manager.ConfigureValidator(new ApplicationSettingsValidator());
 
             var sp = services.BuildServiceProvider();
-
+            sp.UseSettingsValidator(manager);
             sp.GetService<IOptionsMonitor<ApplicationSettings>>().OnChange(settings =>
                 Console.WriteLine($"-> Monitor detected FileChange - new name: {settings.Name}"));
 
