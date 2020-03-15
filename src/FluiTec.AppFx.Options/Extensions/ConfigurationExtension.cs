@@ -18,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var monitorType = typeof(IOptionsMonitor<>).MakeGenericType(settingsType);
                 var monitor = serviceProvider.GetService(monitorType) as IOptionsMonitor<object>;
 
-                monitor.OnChange(o =>
+                monitor?.OnChange(o =>
                 {
                     var result = manager.Validators[o.GetType()].Validate(o);
                     if (!result.IsValid)
