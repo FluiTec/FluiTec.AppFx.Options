@@ -5,6 +5,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://www.nuget.org/packages/FluiTec.AppFx.Options/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/FluiTec/FluiTec.AppFx.Options</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
