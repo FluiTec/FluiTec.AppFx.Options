@@ -4,7 +4,6 @@ using FluentValidation;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
 using Microsoft.Extensions.Options;
-using ValidationException = FluiTec.AppFx.Options.Exceptions.ValidationException;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection

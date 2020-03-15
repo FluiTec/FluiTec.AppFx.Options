@@ -1,4 +1,4 @@
-namespace FluiTec.AppFx.Options.Tests
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions
 {
     public class OptionWithDefaultKey
     {

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace FluiTec.AppFx.Options.Tests.Validators
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions.Validators
 {
     public class OptionWithDefaultKeyValidator : AbstractValidator<OptionWithDefaultKey>
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
+using FluiTec.AppFx.Options.Tests.ConfigurationOptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

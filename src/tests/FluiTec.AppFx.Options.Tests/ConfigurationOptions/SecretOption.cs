@@ -1,6 +1,6 @@
 using FluiTec.AppFx.Options.Attributes;
 
-namespace FluiTec.AppFx.Options.Tests
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions
 {
     public class SecretOption
     {
