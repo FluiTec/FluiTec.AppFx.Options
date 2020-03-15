@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluiTec.AppFx.Options.Managers;
+using FluiTec.AppFx.Options.Tests.Validators;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -148,6 +150,34 @@ namespace FluiTec.AppFx.Options.Tests
 
             var serviceProvider = services.BuildServiceProvider();
             Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+        }
+
+        [TestMethod]
+        public void ReportsOnChangedSetting()
+        {
+            _reportEntries.Clear();
+
+            var services = new ServiceCollection();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            manager.ConfigureValidator(new OptionWithDefaultKeyValidator());
+            var unused = services.Configure<OptionWithDefaultKey>(manager);
+
+            var sp = services.BuildServiceProvider();
+            sp.UseSettingsValidator(manager);
+
+            config.Providers.Single().Set($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", "test2");
+            config.Reload();
+
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.SettingsChangedReport, nameof(OptionWithDefaultKey))));
         }
     }
 }

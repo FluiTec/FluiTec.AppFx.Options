@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Configuration;
@@ -51,17 +52,22 @@ namespace FluiTec.AppFx.Options.Managers
         {
             monitor?.OnChange(o =>
             {
-                var result = Validate(Validators[o.GetType()], o);
+                var settingType = monitor.GetType().GetGenericArguments().SingleOrDefault();
+                if (settingType == null) return;
+
+                var result = Validate(Validators[settingType], o, settingType);
                 if (!result.IsValid)
-                    throw new ValidationException(result, o.GetType(), "Changed variable caused ValidationFailure.");
+                    throw new ValidationException(result, o.GetType(),
+                        "Changed variable caused ValidationFailure.");
             });
         }
 
         /// <summary>Validates the specified validator.</summary>
         /// <param name="validator">The validator.</param>
         /// <param name="setting">The setting.</param>
-        /// <returns></returns>
-        protected virtual ValidationResult Validate(IValidator validator, object setting)
+        /// <param name="objectType"></param>
+        /// <returns>The result of the Validation</returns>
+        protected virtual ValidationResult Validate(IValidator validator, object setting, Type objectType)
         {
             return validator.Validate(setting);
         }

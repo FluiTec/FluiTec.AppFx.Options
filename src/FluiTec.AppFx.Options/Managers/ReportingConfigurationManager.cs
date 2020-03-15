@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using FluentValidation;
+using FluentValidation.Results;
 using FluiTec.AppFx.Options.Attributes;
 using Microsoft.Extensions.Configuration;
 
@@ -35,6 +37,10 @@ namespace FluiTec.AppFx.Options.Managers
         /// <value>The redacted value replacement.</value>
         public string RedactedValueReplacement { get; set; }
 
+        /// <summary>Gets or sets the settings changed report.</summary>
+        /// <value>The settings changed report.</value>
+        public string SettingsChangedReport { get; set; }
+
         #region Constructors
 
         /// <summary>Initializes a new instance of the <see cref="ReportingConfigurationManager"/> class.</summary>
@@ -51,6 +57,7 @@ namespace FluiTec.AppFx.Options.Managers
             NullSettingsReport =     "-> No settings provided.";
             PropertyReport =         "-> '{0}' = '{1}'";
             RedactedValueReplacement = "** REDACTED **";
+            SettingsChangedReport =  "[ConfigurationSettings of '{0}' changed:]";
         }
 
         #endregion
@@ -94,6 +101,27 @@ namespace FluiTec.AppFx.Options.Managers
         {
             var settings =  base.ExtractSettings<TSettings>(configurationKey);
             ReportAction(string.Format(ExtractSettingsReport, typeof(TSettings).Name));
+            ReportSettingProperties(settings);
+            return settings;
+        }
+
+        /// <summary>Validates the specified validator.</summary>
+        /// <param name="validator">The validator.</param>
+        /// <param name="setting">The setting.</param>
+        /// <param name="objectType"></param>
+        /// <returns>The result of the Validation</returns>
+        protected override ValidationResult Validate(IValidator validator, object setting, Type objectType)
+        {
+            var result = base.Validate(validator, setting, objectType);
+            ReportAction(string.Format(SettingsChangedReport, objectType.Name));
+            ReportSettingProperties(setting);
+            return result;
+        }
+
+        /// <summary>Reports the setting properties.</summary>
+        /// <param name="settings">The settings.</param>
+        protected virtual void ReportSettingProperties(object settings)
+        {
             if (settings != null)
             {
                 var propertiesWithGetters = settings.GetType()
@@ -109,7 +137,6 @@ namespace FluiTec.AppFx.Options.Managers
             {
                 ReportAction(string.Format(NullSettingsReport));
             }
-            return settings;
         }
 
         #endregion
