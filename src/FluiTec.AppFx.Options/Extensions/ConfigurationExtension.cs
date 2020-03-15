@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="manager">The manager.</param>
         /// <exception cref="ArgumentNullException">serviceProvider or manager</exception>
-        public static void UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
+        public static IServiceProvider UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
         {
             if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
             if (manager == null) throw new ArgumentNullException(nameof(manager));
@@ -29,15 +29,21 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (monitor != null)
                     manager.KeepValidating(monitor);
             }
+
+            return serviceProvider;
         }
 
         /// <summary>Configures the validator.</summary>
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="manager">The manager.</param>
         /// <param name="validator">The validator.</param>
-        public static void ConfigureValidator<TSettings>(this ValidatingConfigurationManager manager, IValidator<TSettings> validator)
+        public static ValidatingConfigurationManager ConfigureValidator<TSettings>(this ValidatingConfigurationManager manager, IValidator<TSettings> validator)
         {
+            if (manager == null) throw new ArgumentNullException(nameof(manager));
+            if (validator == null) throw new ArgumentNullException(nameof(validator));
+
             manager.Validators.Add(typeof(TSettings), validator);
+            return manager;
         }
 
         /// <summary>Configures the specified manager.</summary>
