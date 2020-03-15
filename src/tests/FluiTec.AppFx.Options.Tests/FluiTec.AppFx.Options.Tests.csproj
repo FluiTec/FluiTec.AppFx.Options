@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluiTec.AppFx.Options\FluiTec.AppFx.Options.csproj" />
+    <ProjectReference Include="..\..\FluiTec.AppFx.Options\FluiTec.AppFx.Options.csproj" />
   </ItemGroup>
 
 </Project>
