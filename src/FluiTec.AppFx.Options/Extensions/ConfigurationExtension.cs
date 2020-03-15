@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FluentValidation;
 using FluiTec.AppFx.Options.Exceptions;
 using FluiTec.AppFx.Options.Managers;
@@ -13,11 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
         {
-            foreach (var settingsType in manager.Validators.Keys)
+            foreach (var monitor in manager.Validators.Keys
+                .Select(settingsType => typeof(IOptionsMonitor<>)
+                .MakeGenericType(settingsType))
+                .Select(monitorType => serviceProvider.GetService(monitorType) as IOptionsMonitor<object>))
             {
-                var monitorType = typeof(IOptionsMonitor<>).MakeGenericType(settingsType);
-                var monitor = serviceProvider.GetService(monitorType) as IOptionsMonitor<object>;
-
                 monitor?.OnChange(o =>
                 {
                     var result = manager.Validators[o.GetType()].Validate(o);
