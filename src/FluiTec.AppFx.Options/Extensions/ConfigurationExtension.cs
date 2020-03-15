@@ -12,19 +12,22 @@ namespace Microsoft.Extensions.DependencyInjection
     /// <summary>Simple extension to simplify using the ConfigurationManager.</summary>
     public static class ConfigurationExtension
     {
+        /// <summary>Uses the settings validator.</summary>
+        /// <param name="serviceProvider">The service provider.</param>
+        /// <param name="manager">The manager.</param>
+        /// <exception cref="ArgumentNullException">serviceProvider or manager</exception>
         public static void UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
         {
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
+            if (manager == null) throw new ArgumentNullException(nameof(manager));
+
             foreach (var monitor in manager.Validators.Keys
                 .Select(settingsType => typeof(IOptionsMonitor<>)
                 .MakeGenericType(settingsType))
                 .Select(monitorType => serviceProvider.GetService(monitorType) as IOptionsMonitor<object>))
             {
-                monitor?.OnChange(o =>
-                {
-                    var result = manager.Validators[o.GetType()].Validate(o);
-                    if (!result.IsValid)
-                        throw new ValidationException(result, o.GetType(), "Changed variable caused ValidationFailure.");
-                });
+                if (monitor != null)
+                    manager.KeepValidating(monitor);
             }
         }
 
