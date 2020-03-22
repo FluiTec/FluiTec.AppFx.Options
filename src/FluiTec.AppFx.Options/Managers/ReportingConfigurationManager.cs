@@ -14,8 +14,7 @@ namespace FluiTec.AppFx.Options.Managers
     {
         #region Fields
 
-        static Type[] UninspectedTypes = new[]
-        {
+        static readonly Type[] UninspectedTypes = {
             typeof(string),
             typeof(bool),
             typeof(char),
