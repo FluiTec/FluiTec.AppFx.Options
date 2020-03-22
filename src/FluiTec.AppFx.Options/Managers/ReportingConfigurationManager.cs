@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using FluentValidation;
 using FluentValidation.Results;
@@ -12,6 +13,26 @@ namespace FluiTec.AppFx.Options.Managers
     public class ReportingConfigurationManager : ValidatingConfigurationManager
     {
         #region Fields
+
+        static Type[] UninspectedTypes = new[]
+        {
+            typeof(string),
+            typeof(bool),
+            typeof(char),
+            typeof(double),
+            typeof(decimal),
+            typeof(byte),
+            typeof(float),
+            typeof(int),
+            typeof(long),
+            typeof(short),
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(TimeSpan),
+            typeof(Enum),
+            typeof(CultureInfo),
+            typeof(Guid)
+        };
 
         protected readonly Action<string> ReportAction;
 
@@ -120,17 +141,25 @@ namespace FluiTec.AppFx.Options.Managers
 
         /// <summary>Reports the setting properties.</summary>
         /// <param name="settings">The settings.</param>
-        protected virtual void ReportSettingProperties(object settings)
+        /// <param name="indentation">The indentation to use</param>
+        protected virtual void ReportSettingProperties(object settings, int indentation = 0)
         {
             if (settings != null)
             {
                 var propertiesWithGetters = settings.GetType()
                     .GetProperties()
-                    .Where(pi => pi.GetGetMethod() != null);
+                    .Where(pi => pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
+                var indent = "";
+                for (var i = 0; i < indentation; i++)
+                    indent += "-";
                 foreach (var p in propertiesWithGetters)
                 {
                     var isSecret = p.GetCustomAttributes(true).SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) != null;
-                    ReportAction(string.Format(PropertyReport, p.Name, isSecret ? RedactedValueReplacement : p.GetValue(settings)));
+                    var value = p.GetValue(settings);
+                    ReportAction(string.Format($"{indent}{PropertyReport}", p.Name, isSecret ? RedactedValueReplacement : value));
+                    var valueType = value.GetType();
+                    if (!UninspectedTypes.Contains(valueType) && !isSecret)
+                        ReportSettingProperties(value, indentation + 1);
                 }
             }
             else

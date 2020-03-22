@@ -98,6 +98,24 @@ namespace FluiTec.AppFx.Options.Tests
         }
 
         [TestMethod]
+        public void CanReportNestedSettings()
+        {
+            _reportEntries.Clear();
+            const string stringSetting = "test";
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>($"{nameof(NestingOption)}:{nameof(NestingOption.Test)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                });
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var unused = manager.ExtractSettings<NestingOption>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format("-" + manager.PropertyReport, nameof(InheritedOption.StringSetting), stringSetting)));
+        }
+
+        [TestMethod]
         public void RedactsSimpleSecrets()
         {
             _reportEntries.Clear();
