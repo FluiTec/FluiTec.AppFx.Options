@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using FluiTec.AppFx.Options.ConsoleSample.Configuration;
 using FluiTec.AppFx.Options.Managers;
@@ -10,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace FluiTec.AppFx.Options.ConsoleSample
 {
-    class Program
+    internal class Program
     {
         private static void Main()
         {
@@ -46,7 +47,7 @@ namespace FluiTec.AppFx.Options.ConsoleSample
 
         private static string GetApplicationRoot()
         {
-            var exePath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
             var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
             var appRoot = appPathMatcher.Match(exePath).Value;
             return appRoot;

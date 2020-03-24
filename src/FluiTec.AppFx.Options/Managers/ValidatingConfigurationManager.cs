@@ -25,7 +25,7 @@ namespace FluiTec.AppFx.Options.Managers
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="configurationKey"></param>
         /// <returns>The settings.</returns>
-        /// <exception cref="ValidationException">Validation for setting failed.</exception>
+        /// <exception cref="Exceptions.ValidationException">Validation for setting failed.</exception>
         /// <remarks>
         /// Will get the required section as indicated by <see cref="configurationKey"/>
         /// and bind a new instance of <see cref="TSettings"/> to the section

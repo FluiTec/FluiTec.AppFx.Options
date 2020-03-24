@@ -65,7 +65,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ReportingConfigurationManager;
@@ -123,7 +123,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(SecretOption)}:{nameof(SecretOption.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(SecretOption)}:{nameof(SecretOption.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ReportingConfigurationManager;
@@ -141,7 +141,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(InheritedSecretOption)}:{nameof(InheritedSecretOption.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(InheritedSecretOption)}:{nameof(InheritedSecretOption.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ReportingConfigurationManager;
@@ -161,7 +161,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
@@ -181,7 +181,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ReportingConfigurationManager;

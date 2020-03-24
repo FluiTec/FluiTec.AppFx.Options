@@ -20,7 +20,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = new ReportingConfigurationManager(config, s => {});
@@ -39,7 +39,7 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting),
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = new ReportingConfigurationManager(config, s => { });
