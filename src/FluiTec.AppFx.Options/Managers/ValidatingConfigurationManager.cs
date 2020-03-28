@@ -24,19 +24,21 @@ namespace FluiTec.AppFx.Options.Managers
         /// <summary>Extracts the settings.</summary>
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="configurationKey"></param>
+        /// <param name="required"></param>
         /// <returns>The settings.</returns>
         /// <exception cref="Exceptions.ValidationException">Validation for setting failed.</exception>
         /// <remarks>
-        ///     Will get the required section as indicated by <see cref="configurationKey" />
-        ///     and bind a new instance of <see cref="TSettings" /> to the section
-        ///     returning that instance. (no cache involved)
-        ///     This method should only be used for direct inspection of certain
-        ///     options, since it won't register any settings to any kind of
-        ///     ServiceCollection.
+        /// Will get the required section as indicated by <see cref="configurationKey"/>
+        ///   and bind a new instance of <see cref="TSettings"/> to the section
+        ///   returning that instance. (no cache involved)
+        ///   This method should only be used for direct inspection of certain
+        ///   options, since it won't register any settings to any kind of
+        ///   ServiceCollection.
         /// </remarks>
-        public override TSettings ExtractSettings<TSettings>(string configurationKey)
+        public override TSettings ExtractSettings<TSettings>(string configurationKey, bool required = false)
         {
-            var setting = base.ExtractSettings<TSettings>(configurationKey);
+            var setting = base.ExtractSettings<TSettings>(configurationKey, required);
+            if (setting == null) return null;
 
             if (!Validators.ContainsKey(typeof(TSettings))) return setting;
             var result = Validators[typeof(TSettings)].Validate(setting);

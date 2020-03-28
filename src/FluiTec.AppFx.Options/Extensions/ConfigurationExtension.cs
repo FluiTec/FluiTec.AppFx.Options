@@ -60,9 +60,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (services == null) throw new ArgumentNullException(nameof(services));
             if (manager == null) throw new ArgumentNullException(nameof(manager));
 
-            var settings = manager.Configure<TSettings>(services);
-            if (required && settings == null)
-                throw new MissingSettingException(typeof(TSettings));
+            var settings = manager.Configure<TSettings>(services, required);
             return settings;
         }
 
@@ -82,7 +80,7 @@ namespace Microsoft.Extensions.DependencyInjection
             if (services == null) throw new ArgumentNullException(nameof(services));
             if (manager == null) throw new ArgumentNullException(nameof(manager));
 
-            var settings = manager.Configure<TSettings>(services, configurationKey);
+            var settings = manager.Configure<TSettings>(services, configurationKey, required);
             if (required && settings == null)
                 throw new MissingSettingException(typeof(TSettings));
             return settings;
