@@ -12,28 +12,25 @@ namespace FluiTec.AppFx.Options.Managers
     /// <seealso cref="FluiTec.AppFx.Options.Managers.ConfigurationManager" />
     public class ReportingConfigurationManager : ValidatingConfigurationManager
     {
-        #region Fields
+        #region Constructors
 
-        private static readonly Type[] UninspectedTypes = {
-            typeof(string),
-            typeof(bool),
-            typeof(char),
-            typeof(double),
-            typeof(decimal),
-            typeof(byte),
-            typeof(float),
-            typeof(int),
-            typeof(long),
-            typeof(short),
-            typeof(DateTime),
-            typeof(DateTimeOffset),
-            typeof(TimeSpan),
-            typeof(Enum),
-            typeof(CultureInfo),
-            typeof(Guid)
-        };
+        /// <summary>Initializes a new instance of the <see cref="ReportingConfigurationManager" /> class.</summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="reportAction">The report action.</param>
+        /// <exception cref="System.ArgumentNullException">reportAction</exception>
+        public ReportingConfigurationManager(IConfigurationRoot configuration, Action<string> reportAction) : base(
+            configuration)
+        {
+            ReportAction = reportAction ?? throw new ArgumentNullException(nameof(reportAction));
 
-        protected readonly Action<string> ReportAction;
+            // setup reports
+            ConfigurationKeyReport = "[ConfigurationKey]: '{0}'";
+            ExtractSettingsReport = "[ConfigurationSettings of '{0}':]";
+            NullSettingsReport = "-> No settings provided.";
+            PropertyReport = "-> '{0}' = '{1}'";
+            RedactedValueReplacement = "** REDACTED **";
+            SettingsChangedReport = "[ConfigurationSettings of '{0}' changed:]";
+        }
 
         #endregion
 
@@ -61,24 +58,29 @@ namespace FluiTec.AppFx.Options.Managers
         /// <value>The settings changed report.</value>
         public string SettingsChangedReport { get; set; }
 
-        #region Constructors
+        #region Fields
 
-        /// <summary>Initializes a new instance of the <see cref="ReportingConfigurationManager"/> class.</summary>
-        /// <param name="configuration">The configuration.</param>
-        /// <param name="reportAction">The report action.</param>
-        /// <exception cref="System.ArgumentNullException">reportAction</exception>
-        public ReportingConfigurationManager(IConfigurationRoot configuration, Action<string> reportAction) : base(configuration)
+        private static readonly Type[] UninspectedTypes =
         {
-            ReportAction = reportAction ?? throw new ArgumentNullException(nameof(reportAction));
+            typeof(string),
+            typeof(bool),
+            typeof(char),
+            typeof(double),
+            typeof(decimal),
+            typeof(byte),
+            typeof(float),
+            typeof(int),
+            typeof(long),
+            typeof(short),
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(TimeSpan),
+            typeof(Enum),
+            typeof(CultureInfo),
+            typeof(Guid)
+        };
 
-            // setup reports
-            ConfigurationKeyReport = "[ConfigurationKey]: '{0}'";
-            ExtractSettingsReport =  "[ConfigurationSettings of '{0}':]";
-            NullSettingsReport =     "-> No settings provided.";
-            PropertyReport =         "-> '{0}' = '{1}'";
-            RedactedValueReplacement = "** REDACTED **";
-            SettingsChangedReport =  "[ConfigurationSettings of '{0}' changed:]";
-        }
+        protected readonly Action<string> ReportAction;
 
         #endregion
 
@@ -89,11 +91,11 @@ namespace FluiTec.AppFx.Options.Managers
         /// <exception cref="System.ArgumentNullException">type</exception>
         /// <returns>The ConfigurationKey</returns>
         /// <remarks>
-        /// Behavior:
-        /// a) Will check internal cache if the the type was ever checked (and return accordingly)
-        /// b) Will inspect the ConfigurationKeyAttribute (cache and return accordingly)
-        /// c) Will use nameof(type) (cache and return accordingly)
-        /// d) Will report the ConfigurationKey
+        ///     Behavior:
+        ///     a) Will check internal cache if the the type was ever checked (and return accordingly)
+        ///     b) Will inspect the ConfigurationKeyAttribute (cache and return accordingly)
+        ///     c) Will use nameof(type) (cache and return accordingly)
+        ///     d) Will report the ConfigurationKey
         /// </remarks>
         public override string GetKeyByType(Type type)
         {
@@ -109,17 +111,17 @@ namespace FluiTec.AppFx.Options.Managers
         /// <exception cref="ArgumentNullException">configurationKey</exception>
         /// <returns>The settings.</returns>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="GetKeyByType"/>
-        /// and bind a new instance of <see cref="TSettings"/> to the section
-        /// returning that instance. (no cache involved)
-        /// This method should only be used for direct inspection of certain
-        /// options, since it won't register any settings to any kind of
-        /// ServiceCollection. Will also report extracted setting.
-        /// Report will redact properties marked with <see cref="ConfigurationSecretAttribute"/>.
+        ///     Will get the required section as indicated by <see cref="GetKeyByType" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection. Will also report extracted setting.
+        ///     Report will redact properties marked with <see cref="ConfigurationSecretAttribute" />.
         /// </remarks>
         public override TSettings ExtractSettings<TSettings>(string configurationKey)
         {
-            var settings =  base.ExtractSettings<TSettings>(configurationKey);
+            var settings = base.ExtractSettings<TSettings>(configurationKey);
             ReportAction(string.Format(ExtractSettingsReport, typeof(TSettings).Name));
             ReportSettingProperties(settings);
             return settings;
@@ -153,9 +155,12 @@ namespace FluiTec.AppFx.Options.Managers
                     indent += "-";
                 foreach (var p in propertiesWithGetters)
                 {
-                    var isSecret = p.GetCustomAttributes(true).SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) != null;
+                    var isSecret = p.GetCustomAttributes(true)
+                                       .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
+                                   null;
                     var value = p.GetValue(settings);
-                    ReportAction(string.Format($"{indent}{PropertyReport}", p.Name, isSecret ? RedactedValueReplacement : value));
+                    ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
+                        isSecret ? RedactedValueReplacement : value));
 
                     if (value == null) continue;
                     var valueType = value.GetType();

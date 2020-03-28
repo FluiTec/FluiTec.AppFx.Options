@@ -6,14 +6,6 @@ namespace FluiTec.AppFx.Options.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class ConfigurationKeyAttribute : Attribute
     {
-        #region Properties
-
-        /// <summary>	Gets or sets the name. </summary>
-        /// <value>	The name of the entity. </value>
-        public string Name { get; set; }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>	Constructor. </summary>
@@ -22,6 +14,14 @@ namespace FluiTec.AppFx.Options.Attributes
         {
             Name = name;
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>	Gets or sets the name. </summary>
+        /// <value>	The name of the entity. </value>
+        public string Name { get; set; }
 
         #endregion
     }

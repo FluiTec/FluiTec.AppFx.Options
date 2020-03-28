@@ -20,14 +20,16 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
-            var manager = new ReportingConfigurationManager(config, s => {});
+            var manager = new ReportingConfigurationManager(config, s => { });
             services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
-            Assert.AreEqual(stringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+            Assert.AreEqual(stringSetting,
+                serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
         }
 
         [TestMethod]
@@ -39,14 +41,16 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}",
+                        stringSetting)
                 });
             var config = builder.Build();
             var manager = new ReportingConfigurationManager(config, s => { });
             services.Configure<OptionWithDefaultKey>(manager, sectionKey);
 
             var serviceProvider = services.BuildServiceProvider();
-            Assert.AreEqual(stringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+            Assert.AreEqual(stringSetting,
+                serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
         }
 
         [TestMethod]

@@ -11,24 +11,16 @@ namespace FluiTec.AppFx.Options.Managers
 {
     /// <summary>A simple ConfigurationManager.</summary>
     /// <remarks>
-    /// Provides:
-    /// a) Naming of ConfigurationKeys (cached)
-    /// b) Extraction of Options from an IConfigurationRoot
-    /// c) Configuration of a ServiceCollection
+    ///     Provides:
+    ///     a) Naming of ConfigurationKeys (cached)
+    ///     b) Extraction of Options from an IConfigurationRoot
+    ///     c) Configuration of a ServiceCollection
     /// </remarks>
     public class ConfigurationManager
     {
-        #region Fields
-
-        protected readonly Dictionary<Type, string> ConfigurationKeys = new Dictionary<Type, string>();
-
-        protected readonly IConfigurationRoot Configuration;
-
-        #endregion
-
         #region Constructors
 
-        /// <summary>Initializes a new instance of the <see cref="ConfigurationManager"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="ConfigurationManager" /> class.</summary>
         /// <param name="configuration">The configuration.</param>
         /// <exception cref="System.ArgumentNullException">configuration</exception>
         public ConfigurationManager(IConfigurationRoot configuration)
@@ -45,10 +37,10 @@ namespace FluiTec.AppFx.Options.Managers
         /// <exception cref="System.ArgumentNullException">type</exception>
         /// <returns>The ConfigurationKey</returns>
         /// <remarks>
-        /// Behavior:
-        /// a) Will check internal cache if the the type was ever checked (and return accordingly)
-        /// b) Will inspect the ConfigurationKeyAttribute (cache and return accordingly)
-        /// c) Will use nameof(type) (cache and return accordingly)
+        ///     Behavior:
+        ///     a) Will check internal cache if the the type was ever checked (and return accordingly)
+        ///     b) Will inspect the ConfigurationKeyAttribute (cache and return accordingly)
+        ///     c) Will use nameof(type) (cache and return accordingly)
         /// </remarks>
         public virtual string GetKeyByType(Type type)
         {
@@ -58,11 +50,23 @@ namespace FluiTec.AppFx.Options.Managers
             if (ConfigurationKeys.ContainsKey(type)) return ConfigurationKeys[type];
 
             // add key to cache
-            ConfigurationKeys.Add(type, type.GetTypeInfo().GetCustomAttributes(typeof(ConfigurationKeyAttribute)).SingleOrDefault() is ConfigurationKeyAttribute attribute ? attribute.Name : type.Name);
+            ConfigurationKeys.Add(type,
+                type.GetTypeInfo().GetCustomAttributes(typeof(ConfigurationKeyAttribute)).SingleOrDefault() is
+                    ConfigurationKeyAttribute attribute
+                    ? attribute.Name
+                    : type.Name);
 
             // return key
             return ConfigurationKeys[type];
         }
+
+        #endregion
+
+        #region Fields
+
+        protected readonly Dictionary<Type, string> ConfigurationKeys = new Dictionary<Type, string>();
+
+        protected readonly IConfigurationRoot Configuration;
 
         #endregion
 
@@ -72,12 +76,12 @@ namespace FluiTec.AppFx.Options.Managers
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <returns>The settings.</returns>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="GetKeyByType"/>
-        /// and bind a new instance of <see cref="TSettings"/> to the section
-        /// returning that instance. (no cache involved)
-        /// This method should only be used for direct inspection of certain
-        /// options, since it won't register any settings to any kind of
-        /// ServiceCollection.
+        ///     Will get the required section as indicated by <see cref="GetKeyByType" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection.
         /// </remarks>
         public virtual TSettings ExtractSettings<TSettings>() where TSettings : class, new()
         {
@@ -92,17 +96,18 @@ namespace FluiTec.AppFx.Options.Managers
         /// <exception cref="ArgumentNullException">configurationKey</exception>
         /// <returns>The settings.</returns>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="configurationKey"/>
-        /// and bind a new instance of <see cref="TSettings"/> to the section
-        /// returning that instance. (no cache involved)
-        /// This method should only be used for direct inspection of certain
-        /// options, since it won't register any settings to any kind of
-        /// ServiceCollection.
+        ///     Will get the required section as indicated by <see cref="configurationKey" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection.
         /// </remarks>
         public virtual TSettings ExtractSettings<TSettings>(string configurationKey) where TSettings : class, new()
         {
             if (configurationKey == null) throw new ArgumentNullException(nameof(configurationKey));
-            if (configurationKey == string.Empty) throw new ArgumentException("Must not be empty", nameof(configurationKey));
+            if (configurationKey == string.Empty)
+                throw new ArgumentException("Must not be empty", nameof(configurationKey));
 
             var section = Configuration.GetSection(configurationKey);
             var settings = section.Get<TSettings>();
@@ -136,7 +141,8 @@ namespace FluiTec.AppFx.Options.Managers
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
             if (configurationKey == null) throw new ArgumentNullException(nameof(configurationKey));
-            if (configurationKey == string.Empty) throw new ArgumentException("Must not be empty", nameof(configurationKey));
+            if (configurationKey == string.Empty)
+                throw new ArgumentException("Must not be empty", nameof(configurationKey));
 
             // adds settings as IOptions<TSetting>, IOptionsSnapshot<TSetting>, etc.
             services.Configure<TSettings>(Configuration.GetSection(configurationKey));

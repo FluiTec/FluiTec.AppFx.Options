@@ -13,6 +13,8 @@ namespace FluiTec.AppFx.Options.ConsoleSample
 {
     internal class Program
     {
+        private static readonly Random Random = new Random();
+
         private static void Main()
         {
             var path = GetApplicationRoot();
@@ -52,8 +54,6 @@ namespace FluiTec.AppFx.Options.ConsoleSample
             var appRoot = appPathMatcher.Match(exePath).Value;
             return appRoot;
         }
-
-        private static readonly Random Random = new Random();
 
         public static string RandomString(int length = 10)
         {

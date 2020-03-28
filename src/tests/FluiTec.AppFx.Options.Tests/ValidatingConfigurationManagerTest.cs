@@ -28,12 +28,13 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ValidatingConfigurationManager;
             Assert.IsNotNull(manager);
-            
+
             manager.ConfigureValidator(new OptionWithDefaultKeyValidator());
             var unused = services.Configure<OptionWithDefaultKey>(manager);
         }
@@ -47,7 +48,8 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config) as ValidatingConfigurationManager;
@@ -59,7 +61,8 @@ namespace FluiTec.AppFx.Options.Tests
             var sp = services.BuildServiceProvider();
             sp.UseSettingsValidator(manager);
 
-            config.Providers.Single().Set($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", string.Empty);
+            config.Providers.Single()
+                .Set($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", string.Empty);
             config.Reload();
         }
     }

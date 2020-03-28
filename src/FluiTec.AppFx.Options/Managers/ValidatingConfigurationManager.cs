@@ -15,7 +15,7 @@ namespace FluiTec.AppFx.Options.Managers
     {
         public readonly Dictionary<Type, IValidator> Validators = new Dictionary<Type, IValidator>();
 
-        /// <summary>Initializes a new instance of the <see cref="ValidatingConfigurationManager"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="ValidatingConfigurationManager" /> class.</summary>
         /// <param name="configuration">The configuration.</param>
         public ValidatingConfigurationManager(IConfigurationRoot configuration) : base(configuration)
         {
@@ -27,16 +27,16 @@ namespace FluiTec.AppFx.Options.Managers
         /// <returns>The settings.</returns>
         /// <exception cref="Exceptions.ValidationException">Validation for setting failed.</exception>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="configurationKey"/>
-        /// and bind a new instance of <see cref="TSettings"/> to the section
-        /// returning that instance. (no cache involved)
-        /// This method should only be used for direct inspection of certain
-        /// options, since it won't register any settings to any kind of
-        /// ServiceCollection.
+        ///     Will get the required section as indicated by <see cref="configurationKey" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection.
         /// </remarks>
         public override TSettings ExtractSettings<TSettings>(string configurationKey)
         {
-            var setting =  base.ExtractSettings<TSettings>(configurationKey);
+            var setting = base.ExtractSettings<TSettings>(configurationKey);
 
             if (!Validators.ContainsKey(typeof(TSettings))) return setting;
             var result = Validators[typeof(TSettings)].Validate(setting);

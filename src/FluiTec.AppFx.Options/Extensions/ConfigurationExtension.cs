@@ -15,19 +15,18 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="manager">The manager.</param>
         /// <exception cref="ArgumentNullException">serviceProvider or manager</exception>
-        public static IServiceProvider UseSettingsValidator(this IServiceProvider serviceProvider, ValidatingConfigurationManager manager)
+        public static IServiceProvider UseSettingsValidator(this IServiceProvider serviceProvider,
+            ValidatingConfigurationManager manager)
         {
             if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
             if (manager == null) throw new ArgumentNullException(nameof(manager));
 
             foreach (var monitor in manager.Validators.Keys
                 .Select(settingsType => typeof(IOptionsMonitor<>)
-                .MakeGenericType(settingsType))
+                    .MakeGenericType(settingsType))
                 .Select(monitorType => serviceProvider.GetService(monitorType) as IOptionsMonitor<object>))
-            {
                 if (monitor != null)
                     manager.KeepValidating(monitor);
-            }
 
             return serviceProvider;
         }
@@ -36,7 +35,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <typeparam name="TSettings">The type of the settings.</typeparam>
         /// <param name="manager">The manager.</param>
         /// <param name="validator">The validator.</param>
-        public static ValidatingConfigurationManager ConfigureValidator<TSettings>(this ValidatingConfigurationManager manager, IValidator<TSettings> validator)
+        public static ValidatingConfigurationManager ConfigureValidator<TSettings>(
+            this ValidatingConfigurationManager manager, IValidator<TSettings> validator)
         {
             if (manager == null) throw new ArgumentNullException(nameof(manager));
             if (validator == null) throw new ArgumentNullException(nameof(validator));
@@ -53,7 +53,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The configured settings.</returns>
         /// <exception cref="System.ArgumentNullException">services or manager</exception>
         /// <exception cref="MissingSettingException">Thrown when specified setting is not configured.</exception>
-        public static TSettings Configure<TSettings>(this IServiceCollection services, ConfigurationManager manager, bool required = false)
+        public static TSettings Configure<TSettings>(this IServiceCollection services, ConfigurationManager manager,
+            bool required = false)
             where TSettings : class, new()
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
@@ -74,7 +75,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns>The configured settings.</returns>
         /// <exception cref="System.ArgumentNullException">services or manager</exception>
         /// <exception cref="MissingSettingException">Thrown when specified setting is not configured.</exception>
-        public static TSettings Configure<TSettings>(this IServiceCollection services, ConfigurationManager manager, string configurationKey, bool required = false)
+        public static TSettings Configure<TSettings>(this IServiceCollection services, ConfigurationManager manager,
+            string configurationKey, bool required = false)
             where TSettings : class, new()
         {
             if (services == null) throw new ArgumentNullException(nameof(services));

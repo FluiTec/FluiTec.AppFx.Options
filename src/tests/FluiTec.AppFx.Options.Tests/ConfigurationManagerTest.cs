@@ -21,7 +21,7 @@ namespace FluiTec.AppFx.Options.Tests
 
         protected virtual ConfigurationManager GetManager(IConfigurationRoot configuration)
         {
-            return  new ConfigurationManager(configuration);
+            return new ConfigurationManager(configuration);
         }
 
         [TestMethod]
@@ -74,7 +74,8 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
@@ -92,7 +93,8 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}",
+                        stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
@@ -109,7 +111,8 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}",
+                        stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
@@ -121,11 +124,12 @@ namespace FluiTec.AppFx.Options.Tests
         {
             const string sectionKey = "MyKey";
             const string stringSetting = "test";
-            
+
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>($"{sectionKey}:{nameof(OptionWithDefaultKey.StringSetting)}",
+                        stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
@@ -141,14 +145,16 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
             var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
-            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
+            Assert.AreEqual(settings.StringSetting,
+                serviceProvider.GetService<IOptions<OptionWithDefaultKey>>().Value.StringSetting);
         }
 
         [TestMethod]
@@ -159,16 +165,18 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
             var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
-            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsSnapshot<OptionWithDefaultKey>>().Value.StringSetting);
+            Assert.AreEqual(settings.StringSetting,
+                serviceProvider.GetService<IOptionsSnapshot<OptionWithDefaultKey>>().Value.StringSetting);
         }
-        
+
         [TestMethod]
         public void TestServiceCollectionOptionsMonitor()
         {
@@ -177,14 +185,16 @@ namespace FluiTec.AppFx.Options.Tests
             var builder = new ConfigurationBuilder()
                 .AddInMemoryCollection(new[]
                 {
-                    new KeyValuePair<string, string>($"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithDefaultKey)}:{nameof(OptionWithDefaultKey.StringSetting)}", stringSetting)
                 });
             var config = builder.Build();
             var manager = GetManager(config);
             var settings = services.Configure<OptionWithDefaultKey>(manager);
 
             var serviceProvider = services.BuildServiceProvider();
-            Assert.AreEqual(settings.StringSetting, serviceProvider.GetService<IOptionsMonitor<OptionWithDefaultKey>>().CurrentValue.StringSetting);
+            Assert.AreEqual(settings.StringSetting,
+                serviceProvider.GetService<IOptionsMonitor<OptionWithDefaultKey>>().CurrentValue.StringSetting);
         }
     }
 }

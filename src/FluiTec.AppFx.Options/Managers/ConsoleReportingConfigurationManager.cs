@@ -7,9 +7,10 @@ namespace FluiTec.AppFx.Options.Managers
     /// <seealso cref="FluiTec.AppFx.Options.Managers.ReportingConfigurationManager" />
     public class ConsoleReportingConfigurationManager : ReportingConfigurationManager
     {
-        /// <summary>Initializes a new instance of the <see cref="ConsoleReportingConfigurationManager"/> class.</summary>
+        /// <summary>Initializes a new instance of the <see cref="ConsoleReportingConfigurationManager" /> class.</summary>
         /// <param name="configuration">The configuration.</param>
-        public ConsoleReportingConfigurationManager(IConfigurationRoot configuration) : base(configuration, Console.WriteLine)
+        public ConsoleReportingConfigurationManager(IConfigurationRoot configuration) : base(configuration,
+            Console.WriteLine)
         {
         }
     }
