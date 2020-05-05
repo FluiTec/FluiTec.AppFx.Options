@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Runtime.InteropServices;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -50,9 +51,19 @@ namespace FluiTec.AppFx.Options.ConsoleSample
         private static string GetApplicationRoot()
         {
             var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-            var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-            var appRoot = appPathMatcher.Match(exePath).Value;
-            return appRoot;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
+            {                
+                var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
+                var appRoot = appPathMatcher.Match(exePath).Value;
+                return appRoot;
+            }
+            else
+            {
+                var appPathMatcher = new Regex(@"(?<!file)\/+[\S\s]*?(?=\/+bin)");
+                var appRoot = appPathMatcher.Match(exePath).Value;
+                return appRoot;
+            }
         }
 
         public static string RandomString(int length = 10)
