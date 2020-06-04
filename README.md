@@ -37,3 +37,14 @@ namespace FluiTec.AppFx.Options.ConsoleSample.Configuration
     }
 }
 ```
+5. configure dependency injection
+```
+// config is typeof(IConfigurationRoot)
+// create a ConfigurationManager for the Configuration
+var manager = new ConsoleReportingConfigurationManager(config);
+// services is typeof(IServiceCollection)
+// register the application-settings
+services.Configure<ApplicationSettings>(manager);
+// configure a validator
+manager.ConfigureValidator(new ApplicationSettingsValidator());
+```
