@@ -10,3 +10,9 @@
 
 ### Nuget ###
 ![Nuget version](https://img.shields.io/nuget/v/FluiTec.AppFx.Options.svg)
+
+### Using it ###
+1. install FluiTec.AppFx.Options
+2. setup appsettings
+3. setup dependency injection
+4. create a class containing options (and possibly a validator)
