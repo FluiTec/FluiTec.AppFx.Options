@@ -15,4 +15,25 @@
 1. install FluiTec.AppFx.Options
 2. setup appsettings
 3. setup dependency injection
-4. create a class containing options (and possibly a validator)
+4. create a class containing options (and possibly a validator), example:
+```
+using FluentValidation;
+using FluiTec.AppFx.Options.Attributes;
+
+namespace FluiTec.AppFx.Options.ConsoleSample.Configuration
+{
+    [ConfigurationKey("AppSettings")]
+    public class ApplicationSettings
+    {
+        public string Name { get; set; }
+    }
+
+    public class ApplicationSettingsValidator : AbstractValidator<ApplicationSettings>
+    {
+        public ApplicationSettingsValidator()
+        {
+            RuleFor(setting => setting.Name).NotEmpty().Length(1, 15);
+        }
+    }
+}
+```
