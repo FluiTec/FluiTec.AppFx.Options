@@ -159,14 +159,21 @@ namespace FluiTec.AppFx.Options.Managers
                     var isSecret = p.GetCustomAttributes(true)
                                        .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
                                    null;
-                    var value = p.GetValue(settings);
-                    ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
-                        isSecret ? RedactedValueReplacement : value));
+                    try
+                    {
+                        var value = p.GetValue(settings);
+                        ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
+                            isSecret ? RedactedValueReplacement : value));
 
-                    if (value == null) continue;
-                    var valueType = value.GetType();
-                    if (!UninspectedTypes.Contains(valueType) && !isSecret)
-                        ReportSettingProperties(value, indentation + 1);
+                        if (value == null) continue;
+                        var valueType = value.GetType();
+                        if (!UninspectedTypes.Contains(valueType) && !isSecret)
+                            ReportSettingProperties(value, indentation + 1);
+                    }
+                    catch (System.Reflection.TargetParameterCountException)
+                    {
+                        // ignore
+                    }
                 }
             }
             else
