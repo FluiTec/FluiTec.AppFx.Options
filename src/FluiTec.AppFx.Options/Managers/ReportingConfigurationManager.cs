@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.Linq;
 using FluentValidation;
@@ -148,31 +149,40 @@ namespace FluiTec.AppFx.Options.Managers
         {
             if (settings != null)
             {
-                var propertiesWithGetters = settings.GetType()
-                    .GetProperties()
-                    .Where(pi => pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
-                var indent = "";
-                for (var i = 0; i < indentation; i++)
-                    indent += "-";
-                foreach (var p in propertiesWithGetters)
+                if (settings is IEnumerable enumerable)
                 {
-                    var isSecret = p.GetCustomAttributes(true)
-                                       .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
-                                   null;
-                    try
+                    foreach(var setting in enumerable)
+                        ReportSettingProperties(setting, indentation+1);
+                }
+                else
+                {
+                    var propertiesWithGetters = settings.GetType()
+                        .GetProperties()
+                        .Where(pi =>
+                            pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
+                    var indent = "";
+                    for (var i = 0; i < indentation; i++)
+                        indent += "-";
+                    foreach (var p in propertiesWithGetters)
                     {
-                        var value = p.GetValue(settings);
-                        ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
-                            isSecret ? RedactedValueReplacement : value));
+                        var isSecret = p.GetCustomAttributes(true)
+                                           .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
+                                       null;
+                        try
+                        {
+                            var value = p.GetValue(settings);
+                            ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
+                                isSecret ? RedactedValueReplacement : value));
 
-                        if (value == null) continue;
-                        var valueType = value.GetType();
-                        if (!UninspectedTypes.Contains(valueType) && !isSecret)
-                            ReportSettingProperties(value, indentation + 1);
-                    }
-                    catch (System.Reflection.TargetParameterCountException)
-                    {
-                        // ignore
+                            if (value == null) continue;
+                            var valueType = value.GetType();
+                            if (!UninspectedTypes.Contains(valueType) && !isSecret)
+                                ReportSettingProperties(value, indentation + 1);
+                        }
+                        catch (System.Reflection.TargetParameterCountException)
+                        {
+                            // ignore
+                        }
                     }
                 }
             }
