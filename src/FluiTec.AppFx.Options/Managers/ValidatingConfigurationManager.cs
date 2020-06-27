@@ -28,12 +28,12 @@ namespace FluiTec.AppFx.Options.Managers
         /// <returns>The settings.</returns>
         /// <exception cref="Exceptions.ValidationException">Validation for setting failed.</exception>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="configurationKey"/>
-        ///   and bind a new instance of <see cref="TSettings"/> to the section
-        ///   returning that instance. (no cache involved)
-        ///   This method should only be used for direct inspection of certain
-        ///   options, since it won't register any settings to any kind of
-        ///   ServiceCollection.
+        ///     Will get the required section as indicated by <see cref="configurationKey" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection.
         /// </remarks>
         public override TSettings ExtractSettings<TSettings>(string configurationKey, bool required = false)
         {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using FluentValidation;
 using FluentValidation.Results;
 using FluiTec.AppFx.Options.Attributes;
@@ -113,13 +114,13 @@ namespace FluiTec.AppFx.Options.Managers
         /// <exception cref="ArgumentException">configurationKey empty</exception>
         /// <exception cref="ArgumentNullException">configurationKey</exception>
         /// <remarks>
-        /// Will get the required section as indicated by <see cref="GetKeyByType"/>
-        ///   and bind a new instance of <see cref="TSettings"/> to the section
-        ///   returning that instance. (no cache involved)
-        ///   This method should only be used for direct inspection of certain
-        ///   options, since it won't register any settings to any kind of
-        ///   ServiceCollection. Will also report extracted setting.
-        ///   Report will redact properties marked with <see cref="ConfigurationSecretAttribute"/>.
+        ///     Will get the required section as indicated by <see cref="GetKeyByType" />
+        ///     and bind a new instance of <see cref="TSettings" /> to the section
+        ///     returning that instance. (no cache involved)
+        ///     This method should only be used for direct inspection of certain
+        ///     options, since it won't register any settings to any kind of
+        ///     ServiceCollection. Will also report extracted setting.
+        ///     Report will redact properties marked with <see cref="ConfigurationSecretAttribute" />.
         /// </remarks>
         public override TSettings ExtractSettings<TSettings>(string configurationKey, bool required = false)
         {
@@ -151,8 +152,8 @@ namespace FluiTec.AppFx.Options.Managers
             {
                 if (settings is IEnumerable enumerable)
                 {
-                    foreach(var setting in enumerable)
-                        ReportSettingProperties(setting, indentation+1);
+                    foreach (var setting in enumerable)
+                        ReportSettingProperties(setting, indentation + 1);
                 }
                 else
                 {
@@ -179,7 +180,7 @@ namespace FluiTec.AppFx.Options.Managers
                             if (!UninspectedTypes.Contains(valueType) && !isSecret)
                                 ReportSettingProperties(value, indentation + 1);
                         }
-                        catch (System.Reflection.TargetParameterCountException)
+                        catch (TargetParameterCountException)
                         {
                             // ignore
                         }
