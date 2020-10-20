@@ -157,32 +157,40 @@ namespace FluiTec.AppFx.Options.Managers
                 }
                 else
                 {
-                    var propertiesWithGetters = settings.GetType()
-                        .GetProperties()
-                        .Where(pi =>
-                            pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
                     var indent = "";
                     for (var i = 0; i < indentation; i++)
                         indent += "-";
-                    foreach (var p in propertiesWithGetters)
-                    {
-                        var isSecret = p.GetCustomAttributes(true)
-                                           .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
-                                       null;
-                        try
-                        {
-                            var value = p.GetValue(settings);
-                            ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
-                                isSecret ? RedactedValueReplacement : value));
 
-                            if (value == null) continue;
-                            var valueType = value.GetType();
-                            if (!UninspectedTypes.Contains(valueType) && !isSecret)
-                                ReportSettingProperties(value, indentation + 1);
-                        }
-                        catch (TargetParameterCountException)
+                    if (settings.GetType().IsEnum)
+                    {
+                        ReportAction(string.Format($"{indent}{PropertyReport}", "Enum", Enum.GetName(settings.GetType(), settings)));
+                    }
+                    else
+                    {
+                        var propertiesWithGetters = settings.GetType()
+                            .GetProperties()
+                            .Where(pi =>
+                                pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
+                        foreach (var p in propertiesWithGetters)
                         {
-                            // ignore
+                            var isSecret = p.GetCustomAttributes(true)
+                                               .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
+                                           null;
+                            try
+                            {
+                                var value = p.GetValue(settings);
+                                ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
+                                    isSecret ? RedactedValueReplacement : value));
+
+                                if (value == null) continue;
+                                var valueType = value.GetType();
+                                if (!UninspectedTypes.Contains(valueType) && !isSecret)
+                                    ReportSettingProperties(value, indentation + 1);
+                            }
+                            catch (TargetParameterCountException)
+                            {
+                                // ignore
+                            }
                         }
                     }
                 }
