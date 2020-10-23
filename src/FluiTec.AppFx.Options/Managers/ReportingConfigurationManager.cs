@@ -152,52 +152,81 @@ namespace FluiTec.AppFx.Options.Managers
             {
                 if (settings is IEnumerable enumerable)
                 {
-                    foreach (var setting in enumerable)
-                        ReportSettingProperties(setting, indentation + 1);
+                    // report all elements in enumerable
+                    ReportEnumerableSettingProperties(settings, enumerable, indentation);
                 }
                 else
                 {
+                    // patch up indentation
                     var indent = "";
                     for (var i = 0; i < indentation; i++)
                         indent += "-";
 
+                    // actually report
                     if (settings.GetType().IsEnum)
                     {
-                        ReportAction(string.Format($"{indent}{PropertyReport}", "Enum", Enum.GetName(settings.GetType(), settings)));
+                        ReportEnumSettingProperty(settings, indent);
                     }
                     else
                     {
-                        var propertiesWithGetters = settings.GetType()
-                            .GetProperties()
-                            .Where(pi =>
-                                pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
-                        foreach (var p in propertiesWithGetters)
-                        {
-                            var isSecret = p.GetCustomAttributes(true)
-                                               .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
-                                           null;
-                            try
-                            {
-                                var value = p.GetValue(settings);
-                                ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
-                                    isSecret ? RedactedValueReplacement : value));
-
-                                if (value == null) continue;
-                                var valueType = value.GetType();
-                                if (!UninspectedTypes.Contains(valueType) && !isSecret)
-                                    ReportSettingProperties(value, indentation + 1);
-                            }
-                            catch (TargetParameterCountException)
-                            {
-                                // ignore
-                            }
-                        }
+                        ReportDefaultSettingProperty(settings, indent, indentation);
                     }
                 }
             }
             else
             {
                 ReportAction(string.Format(NullSettingsReport));
+            }
+        }
+
+        /// <summary>   Reports enumerable setting properties. </summary>
+        /// <param name="settings">     The settings. </param>
+        /// <param name="enumerable">   The enumerable. </param>
+        /// <param name="indentation">  (Optional) The indentation to use. </param>
+        protected virtual void ReportEnumerableSettingProperties(object settings, IEnumerable enumerable, int indentation = 0)
+        {
+            foreach (var setting in enumerable)
+                ReportSettingProperties(setting, indentation + 1);
+        }
+
+        /// <summary>   Reports enum setting property. </summary>
+        /// <param name="settings">     The settings. </param>
+        /// <param name="indent">       The indent. </param>
+        protected virtual void ReportEnumSettingProperty(object settings, string indent)
+        {
+            ReportAction(string.Format($"{indent}{PropertyReport}", "Enum", Enum.GetName(settings.GetType(), settings)));
+        }
+
+        /// <summary>   Reports default setting property. </summary>
+        /// <param name="settings">     The settings. </param>
+        /// <param name="indent">       The indent. </param>
+        /// <param name="indentation">  The indentation to use. </param>
+        protected virtual void ReportDefaultSettingProperty(object settings, string indent, int indentation)
+        {
+            var propertiesWithGetters = settings.GetType()
+                .GetProperties()
+                .Where(pi =>
+                    pi.GetGetMethod() != null && pi.GetMethod.IsPublic && pi.GetMethod.IsStatic == false);
+            foreach (var p in propertiesWithGetters)
+            {
+                var isSecret = p.GetCustomAttributes(true)
+                                   .SingleOrDefault(a => a.GetType() == typeof(ConfigurationSecretAttribute)) !=
+                               null;
+                try
+                {
+                    var value = p.GetValue(settings);
+                    ReportAction(string.Format($"{indent}{PropertyReport}", p.Name,
+                        isSecret ? RedactedValueReplacement : value));
+
+                    if (value == null) continue;
+                    var valueType = value.GetType();
+                    if (!UninspectedTypes.Contains(valueType) && !isSecret)
+                        ReportSettingProperties(value, indentation + 1);
+                }
+                catch (TargetParameterCountException)
+                {
+                    // ignore
+                }
             }
         }
 
