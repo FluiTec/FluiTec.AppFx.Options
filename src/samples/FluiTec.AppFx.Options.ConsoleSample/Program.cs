@@ -55,13 +55,13 @@ namespace FluiTec.AppFx.Options.ConsoleSample
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-                var appRoot = appPathMatcher.Match(exePath).Value;
+                var appRoot = appPathMatcher.Match(exePath ?? throw new InvalidOperationException()).Value;
                 return appRoot;
             }
             else
             {
                 var appPathMatcher = new Regex(@"(?<!file)\/+[\S\s]*?(?=\/+bin)");
-                var appRoot = appPathMatcher.Match(exePath).Value;
+                var appRoot = appPathMatcher.Match(exePath ?? throw new InvalidOperationException()).Value;
                 return appRoot;
             }
         }

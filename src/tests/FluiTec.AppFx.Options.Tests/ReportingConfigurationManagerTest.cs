@@ -55,7 +55,7 @@ namespace FluiTec.AppFx.Options.Tests
 
             var unused = manager.ExtractSettings<OptionWithDefaultKey>();
             Assert.IsTrue(_reportEntries.Contains(string.Format(manager.ExtractSettingsReport,
-                typeof(OptionWithDefaultKey).Name)));
+                nameof(OptionWithDefaultKey))));
         }
 
         [TestMethod]
