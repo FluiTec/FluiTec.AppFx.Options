@@ -41,7 +41,7 @@ namespace FluiTec.AppFx.Options.Managers
             if (setting == null) return null;
 
             if (!Validators.ContainsKey(typeof(TSettings))) return setting;
-            var result = Validators[typeof(TSettings)].Validate(setting);
+            var result = Validators[typeof(TSettings)].Validate(new ValidationContext<object>(setting));
             if (!result.IsValid)
                 throw new ValidationException(result, typeof(TSettings), "Validation for setting failed.");
 
@@ -71,7 +71,7 @@ namespace FluiTec.AppFx.Options.Managers
         /// <returns>The result of the Validation</returns>
         protected virtual ValidationResult Validate(IValidator validator, object setting, Type objectType)
         {
-            return validator.Validate(setting);
+            return validator.Validate(new ValidationContext<object>(setting));
         }
     }
 }
