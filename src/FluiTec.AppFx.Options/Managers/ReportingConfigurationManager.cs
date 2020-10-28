@@ -165,7 +165,7 @@ namespace FluiTec.AppFx.Options.Managers
                     // actually report
                     if (settings.GetType().IsEnum)
                     {
-                        ReportEnumSettingProperty(settings, indent);
+                        // ignore here (is already reported)
                     }
                     else
                     {

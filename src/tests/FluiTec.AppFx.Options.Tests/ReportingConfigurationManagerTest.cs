@@ -79,6 +79,29 @@ namespace FluiTec.AppFx.Options.Tests
         }
 
         [TestMethod]
+        public void CanReportEnumSettings()
+        {
+            _reportEntries.Clear();
+
+            var enumValue = nameof(OptionWithEnum.TestEnum.Test1);
+
+            var builder = new ConfigurationBuilder()
+                .AddInMemoryCollection(new[]
+                {
+                    new KeyValuePair<string, string>(
+                        $"{nameof(OptionWithEnum)}:{nameof(OptionWithEnum.EnumTest)}", enumValue)
+                });
+
+            var config = builder.Build();
+            var manager = GetManager(config) as ReportingConfigurationManager;
+            Assert.IsNotNull(manager);
+
+            var unused = manager.ExtractSettings<OptionWithEnum>();
+            Assert.IsTrue(_reportEntries.Contains(string.Format(manager.PropertyReport,
+                nameof(OptionWithEnum.EnumTest), enumValue)));
+        }
+
+        [TestMethod]
         public void CanReportInheritedSettings()
         {
             _reportEntries.Clear();
