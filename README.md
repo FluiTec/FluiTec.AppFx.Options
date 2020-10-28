@@ -9,7 +9,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/h2910uwkgg8034ba?svg=true)](https://ci.appveyor.com/project/IInvocation/fluitec-appfx-options)
 
 ### Nuget ###
-![Nuget version](https://img.shields.io/nuget/v/FluiTec.AppFx.Options.svg)
+[![Nuget version](https://img.shields.io/nuget/v/FluiTec.AppFx.Options.svg)](https://www.nuget.org/packages/FluiTec.AppFx.Options/)
 
 ### Using it ###
 1. install FluiTec.AppFx.Options
