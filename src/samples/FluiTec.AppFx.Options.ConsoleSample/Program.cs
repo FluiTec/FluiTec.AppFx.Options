@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using FluiTec.AppFx.Options.ConsoleSample.Configuration;
+using FluiTec.AppFx.Options.Helpers;
 using FluiTec.AppFx.Options.Managers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,13 +10,15 @@ using Microsoft.Extensions.Options;
 
 namespace FluiTec.AppFx.Options.ConsoleSample
 {
+    /// <summary>   A program. </summary>
     internal class Program
     {
         private static readonly Random Random = new Random();
 
+        /// <summary>   Main entry-point for this application. </summary>
         private static void Main()
         {
-            var path = GetApplicationRoot();
+            var path = DirectoryHelper.GetApplicationRoot();
             Console.WriteLine($"BasePath: {path}");
             var config = new ConfigurationBuilder()
                 .SetBasePath(path)
@@ -48,24 +48,9 @@ namespace FluiTec.AppFx.Options.ConsoleSample
             }
         }
 
-        private static string GetApplicationRoot()
-        {
-            var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-                var appRoot = appPathMatcher.Match(exePath ?? throw new InvalidOperationException()).Value;
-                return appRoot;
-            }
-            else
-            {
-                var appPathMatcher = new Regex(@"(?<!file)\/+[\S\s]*?(?=\/+bin)");
-                var appRoot = appPathMatcher.Match(exePath ?? throw new InvalidOperationException()).Value;
-                return appRoot;
-            }
-        }
-
+        /// <summary>   Random string. </summary>
+        /// <param name="length">   (Optional) The length. </param>
+        /// <returns>   A string. </returns>
         public static string RandomString(int length = 10)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

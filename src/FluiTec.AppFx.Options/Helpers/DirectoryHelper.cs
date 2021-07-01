@@ -32,5 +32,12 @@ namespace FluiTec.AppFx.Options.Helpers
                 return appRoot;
             }
         }
+
+        /// <summary>   Gets application directory. </summary>
+        /// <returns>   The application directory. </returns>
+        public static string GetApplicationDirectory()
+        {
+            return AppContext.BaseDirectory;
+        }
     }
 }
