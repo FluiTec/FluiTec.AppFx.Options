@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace FluiTec.AppFx.Options.Managers
 {
@@ -10,7 +9,7 @@ namespace FluiTec.AppFx.Options.Managers
         /// <summary>Initializes a new instance of the <see cref="ConsoleReportingConfigurationManager" /> class.</summary>
         /// <param name="configuration">The configuration.</param>
         public ConsoleReportingConfigurationManager(IConfigurationRoot configuration) : base(configuration,
-            Console.WriteLine)
+            System.Console.WriteLine)
         {
         }
     }

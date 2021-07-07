@@ -19,7 +19,7 @@ namespace FluiTec.AppFx.Options.ConsoleSample
         private static void Main()
         {
             var path = DirectoryHelper.GetApplicationRoot();
-            Console.WriteLine($"BasePath: {path}");
+            System.Console.WriteLine($"BasePath: {path}");
             var config = new ConfigurationBuilder()
                 .SetBasePath(path)
                 .AddJsonFile("appsettings.json", false, true).Build();
@@ -32,19 +32,19 @@ namespace FluiTec.AppFx.Options.ConsoleSample
             var sp = services.BuildServiceProvider();
             sp.UseSettingsValidator(manager);
             sp.GetService<IOptionsMonitor<ApplicationSettings>>().OnChange(settings =>
-                Console.WriteLine($"-> Monitor detected FileChange - new name: {settings.Name}"));
+                System.Console.WriteLine($"-> Monitor detected FileChange - new name: {settings.Name}"));
 
-            Console.WriteLine("Type <Enter> to exit.");
-            Console.WriteLine("Type a non empty string to update appsettings.json");
-            while (Console.ReadLine() != string.Empty)
+            System.Console.WriteLine("Type <Enter> to exit.");
+            System.Console.WriteLine("Type a non empty string to update appsettings.json");
+            while (System.Console.ReadLine() != string.Empty)
             {
                 File.WriteAllText(Path.Combine(path, "appsettings.json"),
                     $"{{\"AppSettings\": {{\"Name\": \"{RandomString()}\"}}}}");
 
                 var singleton = sp.GetService<IOptions<ApplicationSettings>>();
-                Console.WriteLine($"Singleton using IOptions: {singleton.Value.Name}");
+                System.Console.WriteLine($"Singleton using IOptions: {singleton.Value.Name}");
                 var scoped = sp.CreateScope().ServiceProvider.GetService<IOptionsSnapshot<ApplicationSettings>>();
-                Console.WriteLine($"Scoped using IOptionsSnapshot: {scoped.Value.Name}");
+                System.Console.WriteLine($"Scoped using IOptionsSnapshot: {scoped.Value.Name}");
             }
         }
 

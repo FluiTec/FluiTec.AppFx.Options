@@ -183,7 +183,8 @@ namespace FluiTec.AppFx.Options.Managers
         /// <param name="settings">     The settings. </param>
         /// <param name="enumerable">   The enumerable. </param>
         /// <param name="indentation">  (Optional) The indentation to use. </param>
-        protected virtual void ReportEnumerableSettingProperties(object settings, IEnumerable enumerable, int indentation = 0)
+        protected virtual void ReportEnumerableSettingProperties(object settings, IEnumerable enumerable,
+            int indentation = 0)
         {
             foreach (var setting in enumerable)
                 ReportSettingProperties(setting, indentation + 1);
@@ -194,7 +195,8 @@ namespace FluiTec.AppFx.Options.Managers
         /// <param name="indent">       The indent. </param>
         protected virtual void ReportEnumSettingProperty(object settings, string indent)
         {
-            ReportAction(string.Format($"{indent}{PropertyReport}", "Enum", Enum.GetName(settings.GetType(), settings)));
+            ReportAction(string.Format($"{indent}{PropertyReport}", "Enum",
+                Enum.GetName(settings.GetType(), settings)));
         }
 
         /// <summary>   Reports default setting property. </summary>
