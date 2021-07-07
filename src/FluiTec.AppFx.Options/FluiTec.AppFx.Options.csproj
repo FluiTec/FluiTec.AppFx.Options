@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\fluitec.appfx.console\src\FluiTec.AppFx.Console\FluiTec.AppFx.Console.csproj" />
+    <ProjectReference Include="$(SolutionDir)\..\fluitec.appfx.console\src\FluiTec.AppFx.Console\FluiTec.AppFx.Console.csproj" />
   </ItemGroup>
 
 </Project>
