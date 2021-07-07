@@ -1,0 +1,4 @@
+[submodule "fluitec.appfx.options"]
+	path = fluitec.appfx.options
+	url = ../../fluitec/fluitec.appfx.options.git
+	branch = develop
