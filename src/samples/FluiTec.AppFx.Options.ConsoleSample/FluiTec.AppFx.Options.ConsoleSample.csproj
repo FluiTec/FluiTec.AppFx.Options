@@ -12,8 +12,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\FluiTec.AppFx.Options\FluiTec.AppFx.Options.csproj" />
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <ProjectReference Include="$(SolutionDir)\..\fluitec.appfx.console\src\FluiTec.AppFx.Console\FluiTec.AppFx.Console.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <PackageReference Include="FluiTec.AppFx.Console" Version="1.0.2"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
