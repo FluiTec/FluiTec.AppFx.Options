@@ -1,4 +1,4 @@
 [submodule "fluitec.appfx.console"]
 	path = fluitec.appfx.console
 	url = ../../fluitec/fluitec.appfx.console.git
-	branch = develop
+	branch = master
