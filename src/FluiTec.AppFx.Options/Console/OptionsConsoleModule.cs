@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluiTec.AppFx.Console.ConsoleItems;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace FluiTec.AppFx.Options.Console
 {
-    /// <summary>   The options console module. </summary>
+    /// <summary>
+    ///     The options console module.
+    /// </summary>
     public class OptionsConsoleModule : ModuleConsoleItem
     {
+        /// <summary>
+        ///     (Immutable) the configuration values.
+        /// </summary>
+        private IOrderedEnumerable<KeyValuePair<string, string>> _configValues;
+
         /// <summary>   Constructor. </summary>
         /// <param name="saveEnabledProvider">  The save enabled provider. </param>
         public OptionsConsoleModule(IConfigurationProvider saveEnabledProvider) : base("Options")
@@ -27,6 +32,16 @@ namespace FluiTec.AppFx.Options.Console
         /// <value> The configuration root. </value>
         private IConfigurationRoot ConfigurationRoot { get; set; }
 
+        public IOrderedEnumerable<KeyValuePair<string, string>> ConfigValues
+        {
+            get => _configValues;
+            set
+            {
+                _configValues = value;
+                RecreateItems();
+            }
+        }
+
         /// <summary>   Initializes this. </summary>
         protected override void Initialize()
         {
@@ -34,8 +49,16 @@ namespace FluiTec.AppFx.Options.Console
             var providers = ConfigurationRoot.Providers
                 .Where(p => p.GetType() != typeof(EnvironmentVariablesConfigurationProvider));
 
-            var configValues = new ConfigurationRoot(providers.ToList()).AsEnumerable().OrderBy(v => v.Key);
-            foreach (var val in configValues)
+            ConfigValues = new ConfigurationRoot(providers.ToList()).AsEnumerable().OrderBy(v => v.Key);
+        }
+
+        /// <summary>
+        ///     Recreate items.
+        /// </summary>
+        private void RecreateItems()
+        {
+            Items.Clear();
+            foreach (var val in _configValues)
             {
                 var parent = val.Key.Contains(':') ? FindParent(val) : this;
                 parent.Items.Add(new OptionsConsoleItem(this, val));
@@ -53,8 +76,7 @@ namespace FluiTec.AppFx.Options.Console
             for (var i = 0; i < split.Count - 1; i++)
             {
                 var parentName = split[i];
-                var nParent = parent.Items.SingleOrDefault(item => item.Name == parentName) as SelectConsoleItem;
-                if (nParent == null)
+                if (parent.Items.SingleOrDefault(item => item.Name == parentName) is not SelectConsoleItem nParent)
                 {
                     nParent = new OptionsConsoleItem(this, new KeyValuePair<string, string>(split[i], null));
                     parent.Items.Add(nParent);
@@ -64,24 +86,6 @@ namespace FluiTec.AppFx.Options.Console
             }
 
             return parent;
-        }
-
-        /// <summary>   Finds the configured option types in this collection. </summary>
-        /// <returns>
-        ///     An enumerator that allows foreach to be used to process the configured option types in
-        ///     this collection.
-        /// </returns>
-        private IEnumerable<Type> FindConfiguredOptionTypes()
-        {
-            if (Application.HostServices.GetRequiredService(typeof(IServiceCollection)) is not IServiceCollection
-                services) return Enumerable.Empty<Type>();
-
-            return services
-                .Select(s => s.ServiceType)
-                .Where(s => s.IsGenericType &&
-                            typeof(IConfigureOptions<>).IsAssignableFrom(s.GetGenericTypeDefinition()))
-                .Select(s => s.GenericTypeArguments.Single())
-                .ToList();
         }
 
         /// <summary>   Gets setting value. </summary>
@@ -95,16 +99,39 @@ namespace FluiTec.AppFx.Options.Console
         /// <summary>   Edit setting. </summary>
         /// <param name="key">      The key. </param>
         /// <param name="value">    The value. </param>
-        public void EditSetting(string key, string value)
+        public bool EditSetting(string key, string value)
         {
-            SaveEnabledProvider?.Set(key, value);
+            if (ConfigValues.Any(cv => cv.Key == key))
+            {
+                SaveEnabledProvider?.Set(key, value);
+            }
+            else
+            {
+                SaveEnabledProvider?.Set(key, value);
+                Initialize();
+            }
+
+            return SaveEnabledProvider != null;
         }
 
         /// <summary>   Edit setting. </summary>
         /// <param name="item"> The item. </param>
-        public void EditSetting(KeyValuePair<string, string> item)
+        public bool EditSetting(KeyValuePair<string, string> item)
         {
-            EditSetting(item.Key, item.Value);
+            return EditSetting(item.Key, item.Value);
+        }
+
+        /// <summary>
+        ///     Enumerates create default items in this collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process create default items in this
+        ///     collection.
+        /// </returns>
+        protected override IEnumerable<IConsoleItem> CreateDefaultItems()
+        {
+            var def = base.CreateDefaultItems();
+            return new[] {new AddOptionConsoleItem(this)}.Concat(def);
         }
     }
 }

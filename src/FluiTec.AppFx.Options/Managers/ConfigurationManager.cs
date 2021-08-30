@@ -65,7 +65,7 @@ namespace FluiTec.AppFx.Options.Managers
 
         #region Fields
 
-        protected readonly Dictionary<Type, string> ConfigurationKeys = new Dictionary<Type, string>();
+        protected readonly Dictionary<Type, string> ConfigurationKeys = new();
 
         protected readonly IConfigurationRoot Configuration;
 

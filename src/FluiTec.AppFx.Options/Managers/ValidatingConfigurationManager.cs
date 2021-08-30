@@ -13,7 +13,7 @@ namespace FluiTec.AppFx.Options.Managers
     /// <seealso cref="FluiTec.AppFx.Options.Managers.ConfigurationManager" />
     public class ValidatingConfigurationManager : ConfigurationManager
     {
-        public readonly Dictionary<Type, IValidator> Validators = new Dictionary<Type, IValidator>();
+        public readonly Dictionary<Type, IValidator> Validators = new();
 
         /// <summary>Initializes a new instance of the <see cref="ValidatingConfigurationManager" /> class.</summary>
         /// <param name="configuration">The configuration.</param>

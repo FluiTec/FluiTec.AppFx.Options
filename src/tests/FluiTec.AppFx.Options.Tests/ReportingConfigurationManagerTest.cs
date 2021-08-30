@@ -14,7 +14,7 @@ namespace FluiTec.AppFx.Options.Tests
     [TestClass]
     public class ReportingConfigurationManagerTest : ValidatingConfigurationManagerTest
     {
-        private readonly List<string> _reportEntries = new List<string>();
+        private readonly List<string> _reportEntries = new();
 
         protected override ConfigurationManager GetManager(IConfigurationRoot configuration)
         {

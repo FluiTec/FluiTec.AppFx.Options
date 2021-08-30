@@ -17,7 +17,7 @@ namespace FluiTec.AppFx.Options.Console
         {
             Module = module;
 
-            var (key, value) = item;
+            var (key, _) = item;
             Key = key;
         }
 
@@ -38,9 +38,11 @@ namespace FluiTec.AppFx.Options.Console
             {
                 if (value != Value)
                 {
+                    // TODO: use Presenter.ErrorText
                     AnsiConsole.MarkupLine($"The {Presenter.HighlightText("new value")} is \"{value}\"");
-                    Module.EditSetting(Key, value);
-                    AnsiConsole.MarkupLine($"The {Presenter.HighlightText("new value")} was saved");
+                    AnsiConsole.MarkupLine(Module.EditSetting(Key, value)
+                        ? $"The {Presenter.HighlightText("new value")} was saved"
+                        : $"[red]Missing {nameof(Module.SaveEnabledProvider)}. Changes could not be saved.[/]");
                 }
                 else
                 {
@@ -63,11 +65,24 @@ namespace FluiTec.AppFx.Options.Console
             Presenter.PresentHeader($"View/Edit {{{Name}}} - current value:");
             AnsiConsole.WriteLine(Value);
             AnsiConsole.Render(new Rule().RuleStyle(Presenter.Style.DefaultTextStyle).LeftAligned());
+
             if (AnsiConsole.Confirm("Edit value?"))
                 Value = AnsiConsole.Ask<string>(
                     $"Please enter a {Presenter.HighlightText("new value")}:{Environment.NewLine}");
 
             Parent.Display(null);
+        }
+
+        /// <summary>
+        ///     Enumerates create default items in this collection.
+        /// </summary>
+        /// <returns>
+        ///     An enumerator that allows foreach to be used to process create default items in this
+        ///     collection.
+        /// </returns>
+        protected override IEnumerable<IConsoleItem> CreateDefaultItems()
+        {
+            return new[] {new AddOptionConsoleItem(Module)}.Concat(base.CreateDefaultItems());
         }
     }
 }
