@@ -18,10 +18,10 @@ namespace FluiTec.AppFx.Options.Cli.Sample
         ///     Main entry-point for this application.
         /// </summary>
         /// <param name="args"> An array of command-line argument strings. </param>
-        private static void Main(string[] args)
+        private static int Main(string[] args)
         {
             var serviceProvider = GetServicePovider();
-            new ConsoleHost(serviceProvider).Run("Test", args);
+            return new ConsoleHost(serviceProvider).Run("Test", args);
         }
 
         /// <summary>

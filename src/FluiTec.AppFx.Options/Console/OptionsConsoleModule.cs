@@ -158,15 +158,21 @@ namespace FluiTec.AppFx.Options.Console
             var editCmd = new Command("--edit", "Edit configuration of the application.");
             editCmd.AddOption(new Option<string>("--key", "Key of the configuration-entry.") {IsRequired = true});
             editCmd.AddOption(new Option<string>("--value", "(New) Value of the configuration-entry.") {IsRequired = false});
-            editCmd.Handler = CommandHandler.Create<string, string>(ProcessEdit);
+            editCmd.Handler = CommandHandler.Create(new System.Func<string, string, int>(ProcessEdit));
 
             var addCmd = new Command("--add", "Add an entry to configuration of the application.");
             addCmd.AddOption(new Option<string>("--key", "Key of the configuration-entry.") {IsRequired = true});
             addCmd.AddOption(new Option<string>("--value", "(New) Value of the configuration-entry.") {IsRequired = false});
-            addCmd.Handler = CommandHandler.Create<string, string>(ProcessEdit);
+            addCmd.Handler = CommandHandler.Create(new System.Func<string, string, int>(ProcessEdit));
+
+            var viewCmd = new Command("--read", "Read the value of a configuration-key,");
+            viewCmd.AddOption(new Option<string>("--key", "Key of the configuration-entry.") {IsRequired = true});
+            viewCmd.Handler = CommandHandler.Create(new System.Func<string, int>(ProcessRead));
 
             cmd.AddCommand(editCmd);
             cmd.AddCommand(addCmd);
+            cmd.AddCommand(viewCmd);
+
             return cmd;
         }
 
@@ -176,16 +182,49 @@ namespace FluiTec.AppFx.Options.Console
         ///
         /// <param name="key">  The key. </param>
         /// <param name="val">  The value. </param>
-        private void ProcessEdit(string key, string val)
+        private int ProcessEdit(string key, string val)
         {
             if (EditSetting(key, val))
             {
                 AnsiConsole.MarkupLine($"The value of key '{Presenter.HighlightText(key)}' was set to '{Presenter.HighlightText(val)}'");
+                return (int)ExitCode.Success;
             }
-            else
+
+            Presenter.ErrorText($"Missing {nameof(SaveEnabledProvider)}. Changes could not be saved.");
+            return (int)ExitCode.Error;
+        }
+
+        /// <summary>
+        /// Process the read described by key.
+        /// </summary>
+        ///
+        /// <param name="key">  The key. </param>
+        private int ProcessRead(string key)
+        {
+            var (s, value) = ConfigValues.SingleOrDefault(cv => cv.Key == key);
+            if (s != null)
             {
-                Presenter.ErrorText($"Missing {nameof(SaveEnabledProvider)}. Changes could not be saved.");
+                System.Console.WriteLine(value);
+                return (int) ExitCode.Success;
             }
+
+            System.Console.WriteLine("Non-existent config-key. Could not find value.");
+            return (int) ExitCode.Error;
+        }
+
+        /// <summary>
+        /// Values that represent exit codes.
+        /// </summary>
+        public enum ExitCode
+        {
+            /// <summary>
+            /// An enum constant representing the success option.
+            /// </summary>
+            Success = 0,
+            /// <summary>
+            /// An enum constant representing the error option.
+            /// </summary>
+            Error = 1
         }
     }
 }
