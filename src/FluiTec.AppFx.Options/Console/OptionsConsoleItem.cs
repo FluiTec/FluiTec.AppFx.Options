@@ -42,7 +42,7 @@ namespace FluiTec.AppFx.Options.Console
                     AnsiConsole.MarkupLine($"The {Presenter.HighlightText("new value")} is \"{value}\"");
                     AnsiConsole.MarkupLine(Module.EditSetting(Key, value)
                         ? $"The {Presenter.HighlightText("new value")} was saved"
-                        : $"[red]Missing {nameof(Module.SaveEnabledProvider)}. Changes could not be saved.[/]");
+                        : Presenter.ErrorText($"Missing {nameof(Module.SaveEnabledProvider)}. Changes could not be saved."));
                 }
                 else
                 {

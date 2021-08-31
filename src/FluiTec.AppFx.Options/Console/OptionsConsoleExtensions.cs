@@ -16,7 +16,7 @@ namespace FluiTec.AppFx.Options.Console
             ConsoleHost.ConfigureModule(services, provider =>
             {
                 var conf = provider.GetRequiredService<IConfigurationRoot>();
-                var cp = conf.Providers.Single(p => p is SaveableJsonConfigurationProvider);
+                var cp = conf.Providers.SingleOrDefault(p => p is SaveableJsonConfigurationProvider);
                 return new OptionsConsoleModule(cp);
             });
         }

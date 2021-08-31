@@ -27,7 +27,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{C154
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluiTec.AppFx.Console", "..\fluitec.appfx.console\src\FluiTec.AppFx.Console\FluiTec.AppFx.Console.csproj", "{ECE4B050-C9CD-43A0-AB40-018FF139C261}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluiTec.AppFx.Options.Cli.InteractiveSample", "samples\FluiTec.AppFx.Options.Cli.InteractiveSample\FluiTec.AppFx.Options.Cli.InteractiveSample.csproj", "{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluiTec.AppFx.Options.Cli.InteractiveSample", "samples\FluiTec.AppFx.Options.Cli.InteractiveSample\FluiTec.AppFx.Options.Cli.InteractiveSample.csproj", "{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluiTec.AppFx.Options.Cli.Sample", "samples\FluiTec.AppFx.Options.Cli.Sample\FluiTec.AppFx.Options.Cli.Sample.csproj", "{AA510D63-CF5E-4B8C-80B9-A14194811D62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA510D63-CF5E-4B8C-80B9-A14194811D62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA510D63-CF5E-4B8C-80B9-A14194811D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA510D63-CF5E-4B8C-80B9-A14194811D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA510D63-CF5E-4B8C-80B9-A14194811D62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{164E7D39-8518-46E7-B35B-84642F80A416} = {FCB7016F-062F-484D-9BA8-66ED11788127}
 		{ECE4B050-C9CD-43A0-AB40-018FF139C261} = {C154833F-2175-4307-88D7-1D6B9D1B3201}
 		{C04E3E91-AF1B-4CF4-8DC8-7B33477A5F5B} = {65ADC9B0-198A-4A7F-8347-07BBAE2417A8}
+		{AA510D63-CF5E-4B8C-80B9-A14194811D62} = {65ADC9B0-198A-4A7F-8347-07BBAE2417A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {77E1C98A-0968-463E-A636-223D734153E7}

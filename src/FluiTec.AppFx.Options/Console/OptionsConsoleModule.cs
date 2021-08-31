@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.CommandLine;
+using System.CommandLine.Invocation;
 using System.Linq;
 using FluiTec.AppFx.Console.ConsoleItems;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 namespace FluiTec.AppFx.Options.Console
 {
@@ -32,6 +35,13 @@ namespace FluiTec.AppFx.Options.Console
         /// <value> The configuration root. </value>
         private IConfigurationRoot ConfigurationRoot { get; set; }
 
+        /// <summary>
+        /// Gets or sets the configuration values.
+        /// </summary>
+        ///
+        /// <value>
+        /// The configuration values.
+        /// </value>
         public IOrderedEnumerable<KeyValuePair<string, string>> ConfigValues
         {
             get => _configValues;
@@ -132,6 +142,50 @@ namespace FluiTec.AppFx.Options.Console
         {
             var def = base.CreateDefaultItems();
             return new[] {new AddOptionConsoleItem(this)}.Concat(def);
+        }
+
+        /// <summary>
+        /// Configure command.
+        /// </summary>
+        ///
+        /// <returns>
+        /// A System.CommandLine.Command.
+        /// </returns>
+        public override Command ConfigureCommand()
+        {
+            var cmd = new Command("--options", "Configuration of the application. (Key/Value store)");
+
+            var editCmd = new Command("--edit", "Edit configuration of the application.");
+            editCmd.AddOption(new Option<string>("--key", "Key of the configuration-entry.") {IsRequired = true});
+            editCmd.AddOption(new Option<string>("--value", "(New) Value of the configuration-entry.") {IsRequired = false});
+            editCmd.Handler = CommandHandler.Create<string, string>(ProcessEdit);
+
+            var addCmd = new Command("--add", "Add an entry to configuration of the application.");
+            addCmd.AddOption(new Option<string>("--key", "Key of the configuration-entry.") {IsRequired = true});
+            addCmd.AddOption(new Option<string>("--value", "(New) Value of the configuration-entry.") {IsRequired = false});
+            addCmd.Handler = CommandHandler.Create<string, string>(ProcessEdit);
+
+            cmd.AddCommand(editCmd);
+            cmd.AddCommand(addCmd);
+            return cmd;
+        }
+
+        /// <summary>
+        /// Process the edit.
+        /// </summary>
+        ///
+        /// <param name="key">  The key. </param>
+        /// <param name="val">  The value. </param>
+        private void ProcessEdit(string key, string val)
+        {
+            if (EditSetting(key, val))
+            {
+                AnsiConsole.MarkupLine($"The value of key '{Presenter.HighlightText(key)}' was set to '{Presenter.HighlightText(val)}'");
+            }
+            else
+            {
+                Presenter.ErrorText($"Missing {nameof(SaveEnabledProvider)}. Changes could not be saved.");
+            }
         }
     }
 }
