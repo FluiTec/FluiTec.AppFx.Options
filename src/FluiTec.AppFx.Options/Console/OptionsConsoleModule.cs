@@ -15,17 +15,16 @@ namespace FluiTec.AppFx.Options.Console
     /// </summary>
     public class OptionsConsoleModule : ModuleConsoleItem
     {
+        #region Fields
+
         /// <summary>
         ///     (Immutable) the configuration values.
         /// </summary>
         private IOrderedEnumerable<KeyValuePair<string, string>> _configValues;
 
-        /// <summary>   Constructor. </summary>
-        /// <param name="saveEnabledProvider">  The save enabled provider. </param>
-        public OptionsConsoleModule(IConfigurationProvider saveEnabledProvider) : base("Options")
-        {
-            SaveEnabledProvider = saveEnabledProvider;
-        }
+        #endregion
+
+        #region Properties
 
         /// <summary>   Gets the save enabled provider. </summary>
         /// <value> The save enabled provider. </value>
@@ -51,6 +50,21 @@ namespace FluiTec.AppFx.Options.Console
                 RecreateItems();
             }
         }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>   Constructor. </summary>
+        /// <param name="saveEnabledProvider">  The save enabled provider. </param>
+        public OptionsConsoleModule(IConfigurationProvider saveEnabledProvider) : base("Options")
+        {
+            SaveEnabledProvider = saveEnabledProvider;
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>   Initializes this. </summary>
         protected override void Initialize()
@@ -211,6 +225,8 @@ namespace FluiTec.AppFx.Options.Console
             System.Console.WriteLine("Non-existent config-key. Could not find value.");
             return (int) ExitCode.Error;
         }
+
+        #endregion
 
         /// <summary>
         /// Values that represent exit codes.

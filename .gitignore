@@ -38,7 +38,6 @@ netstandard1.6/
 *.local.xml
 *.local.json
 *.local.cmd
-appsettings.conf.json
 
 # Certificates
 *.pfx
@@ -310,4 +309,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# Other
 appsettings.conf.json
