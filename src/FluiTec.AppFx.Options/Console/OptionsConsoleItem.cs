@@ -64,7 +64,7 @@ namespace FluiTec.AppFx.Options.Console
             // if item doesnt contain element - let the user view/edit the value and after doing so - return control
             Presenter.PresentHeader($"View/Edit {{{Name}}} - current value:");
             AnsiConsole.WriteLine(Value);
-            AnsiConsole.Render(new Rule().RuleStyle(Presenter.Style.DefaultTextStyle).LeftAligned());
+            AnsiConsole.Write(new Rule().RuleStyle(Presenter.Style.DefaultTextStyle).LeftAligned());
 
             if (AnsiConsole.Confirm("Edit value?"))
                 Value = AnsiConsole.Ask<string>(
