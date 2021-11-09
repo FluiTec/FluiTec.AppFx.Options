@@ -16,7 +16,7 @@ namespace FluiTec.AppFx.Options.Tests
     {
         private readonly List<string> _reportEntries = new();
 
-        protected override ConfigurationManager GetManager(IConfigurationRoot configuration)
+        protected override Managers.ConfigurationManager GetManager(IConfigurationRoot configuration)
         {
             return new ReportingConfigurationManager(configuration, ReportAction);
         }

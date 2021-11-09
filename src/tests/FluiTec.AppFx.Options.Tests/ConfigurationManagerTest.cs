@@ -19,16 +19,16 @@ namespace FluiTec.AppFx.Options.Tests
             return builder.Build();
         }
 
-        protected virtual ConfigurationManager GetManager(IConfigurationRoot configuration)
+        protected virtual Managers.ConfigurationManager GetManager(IConfigurationRoot configuration)
         {
-            return new ConfigurationManager(configuration);
+            return new Managers.ConfigurationManager(configuration);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ThrowsOnMissingConfiguration()
         {
-            var unused = new ConfigurationManager(null);
+            var unused = new Managers.ConfigurationManager(null);
         }
 
         [TestMethod]
