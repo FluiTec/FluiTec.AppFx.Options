@@ -41,4 +41,8 @@
     <PackageReference Include="FluiTec.AppFx.Console" Version="1.0.32"></PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Programs\" />
+  </ItemGroup>
+
 </Project>

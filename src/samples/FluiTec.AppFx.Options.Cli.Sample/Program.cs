@@ -2,67 +2,61 @@
 using FluiTec.AppFx.Console.Configuration;
 using FluiTec.AppFx.Options.Cli.Sample.Configuration;
 using FluiTec.AppFx.Options.Console;
-using FluiTec.AppFx.Options.Helpers;
-using FluiTec.AppFx.Options.Managers;
+using FluiTec.AppFx.Options.Programs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FluiTec.AppFx.Options.Cli.Sample
+namespace FluiTec.AppFx.Options.Cli.Sample;
+
+/// <summary>
+/// A program.
+/// </summary>
+internal class Program : ValidatingConfigurationManagerProgram
 {
     /// <summary>
-    /// A program.
+    ///     Main entry-point for this application.
     /// </summary>
-    internal class Program
+    /// <param name="args"> An array of command-line argument strings. </param>
+    private static int Main(string[] args)
     {
-        /// <summary>
-        ///     Main entry-point for this application.
-        /// </summary>
-        /// <param name="args"> An array of command-line argument strings. </param>
-        private static int Main(string[] args)
-        {
-            var serviceProvider = GetServicePovider();
-            return new ConsoleHost(serviceProvider).Run("Test", args);
-        }
+        var serviceProvider = new Program().GetServiceProvider();
+        return new ConsoleHost(serviceProvider).Run("Test", args);
+    }
 
-        /// <summary>
-        ///     Gets the configuration.
-        /// </summary>
-        /// <returns>
-        ///     The configuration.
-        /// </returns>
-        private static IConfigurationRoot GetConfiguration()
-        {
-            var path = DirectoryHelper.GetApplicationRoot();
-            var config = new ConfigurationBuilder()
-                .SetBasePath(path)
-                .AddJsonFile("appsettings.json", false, true)
-                .AddSaveableJsonFile("appsettings.conf.json", false, true)
-                .Build();
-            return config;
-        }
+    /// <summary>
+    /// Configures the given configuration builder.
+    /// </summary>
+    ///
+    /// <param name="configurationBuilder"> The configuration builder. </param>
+    ///
+    /// <returns>
+    /// An IConfigurationBuilder.
+    /// </returns>
+    protected override IConfigurationBuilder Configure(IConfigurationBuilder configurationBuilder)
+    {
+        return configurationBuilder
+            .AddJsonFile("appsettings.json", false, true)
+            .AddSaveableJsonFile("appsettings.conf.json", false, true);
+    }
 
-        /// <summary>
-        ///     Gets service povider.
-        /// </summary>
-        /// <returns>
-        ///     The service povider.
-        /// </returns>
-        private static ServiceProvider GetServicePovider()
-        {
-            var conf = GetConfiguration();
-            var manager = new ValidatingConfigurationManager(conf);
-            var services = new ServiceCollection();
+    /// <summary>
+    /// Configure services.
+    /// </summary>
+    ///
+    /// <param name="services"> The services. </param>
+    ///
+    /// <returns>
+    /// A ServiceCollection.
+    /// </returns>
+    protected override ServiceCollection ConfigureServices(ServiceCollection services)
+    {
+        base.ConfigureServices(services);
 
-            services.Configure<ApplicationSettings>(manager);
-            manager.ConfigureValidator(new ApplicationSettingsValidator());
+        services.Configure<ApplicationSettings>(Manager);
+        Manager.ConfigureValidator(new ApplicationSettingsValidator());
 
-            services.AddSingleton(conf);
-            services.ConfigureOptionsConsoleModule();
+        services.ConfigureOptionsConsoleModule();
 
-            var sp = services.BuildServiceProvider();
-            sp.UseSettingsValidator(manager);
-
-            return sp;
-        }
+        return services;
     }
 }

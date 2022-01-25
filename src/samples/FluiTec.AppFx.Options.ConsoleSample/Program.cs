@@ -1,61 +1,81 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
+using FluiTec.AppFx.Console.Helpers;
 using FluiTec.AppFx.Options.ConsoleSample.Configuration;
-using FluiTec.AppFx.Options.Helpers;
-using FluiTec.AppFx.Options.Managers;
+using FluiTec.AppFx.Options.Programs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace FluiTec.AppFx.Options.ConsoleSample
+namespace FluiTec.AppFx.Options.ConsoleSample;
+
+/// <summary>   A program. </summary>
+internal class Program : ValidatingConfigurationManagerProgram
 {
-    /// <summary>   A program. </summary>
-    internal class Program
+    private static void Main()
     {
-        private static readonly Random Random = new Random();
+        var sp = new Program().GetServiceProvider();
+        var path = DirectoryHelper.GetApplicationRoot();
 
-        /// <summary>   Main entry-point for this application. </summary>
-        private static void Main()
+        System.Console.WriteLine("Type <Enter> to exit.");
+        System.Console.WriteLine("Type a non empty string to update appsettings.json");
+
+        while (System.Console.ReadLine() != string.Empty)
         {
-            var path = DirectoryHelper.GetApplicationRoot();
-            System.Console.WriteLine($"BasePath: {path}");
-            var config = new ConfigurationBuilder()
-                .SetBasePath(path)
-                .AddJsonFile("appsettings.json", false, true).Build();
+            WriteConfigFile(Path.Combine(path, "appsettings.json"), "MyApplication");
 
-            var manager = new ConsoleReportingConfigurationManager(config);
-            var services = new ServiceCollection();
-            services.Configure<ApplicationSettings>(manager);
-            manager.ConfigureValidator(new ApplicationSettingsValidator());
-
-            var sp = services.BuildServiceProvider();
-            sp.UseSettingsValidator(manager);
-            sp.GetService<IOptionsMonitor<ApplicationSettings>>().OnChange(settings =>
-                System.Console.WriteLine($"-> Monitor detected FileChange - new name: {settings.Name}"));
-
-            System.Console.WriteLine("Type <Enter> to exit.");
-            System.Console.WriteLine("Type a non empty string to update appsettings.json");
-            while (System.Console.ReadLine() != string.Empty)
-            {
-                File.WriteAllText(Path.Combine(path, "appsettings.json"),
-                    $"{{\"AppSettings\": {{\"Name\": \"{RandomString()}\"}}}}");
-
-                var singleton = sp.GetService<IOptions<ApplicationSettings>>();
+            var singleton = sp.GetService<IOptions<ApplicationSettings>>();
+            if (singleton != null)
                 System.Console.WriteLine($"Singleton using IOptions: {singleton.Value.Name}");
-                var scoped = sp.CreateScope().ServiceProvider.GetService<IOptionsSnapshot<ApplicationSettings>>();
+            
+            var scoped = sp.CreateScope().ServiceProvider.GetService<IOptionsSnapshot<ApplicationSettings>>();
+            if (scoped != null)
                 System.Console.WriteLine($"Scoped using IOptionsSnapshot: {scoped.Value.Name}");
-            }
         }
+    }
 
-        /// <summary>   Random string. </summary>
-        /// <param name="length">   (Optional) The length. </param>
-        /// <returns>   A string. </returns>
-        public static string RandomString(int length = 10)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[Random.Next(s.Length)]).ToArray());
-        }
+    /// <summary>
+    /// Writes a configuration file.
+    /// </summary>
+    ///
+    /// <param name="path"> Full pathname of the file. </param>
+    /// <param name="name"> The name. </param>
+    private static void WriteConfigFile(string path, string name)
+    {
+        var content = $"{{\"AppSettings\": {{\"Name\": \"{name}\"}}}}";
+        File.WriteAllText(path, content);
+    }
+
+    /// <summary>
+    /// Configures the given configuration builder.
+    /// </summary>
+    ///
+    /// <param name="configurationBuilder"> The configuration builder. </param>
+    ///
+    /// <returns>
+    /// An IConfigurationBuilder.
+    /// </returns>
+    protected override IConfigurationBuilder Configure(IConfigurationBuilder configurationBuilder)
+    {
+        return configurationBuilder
+            .AddJsonFile("appsettings.json", false, true);
+    }
+
+    /// <summary>
+    /// Configure services.
+    /// </summary>
+    ///
+    /// <param name="services"> The services. </param>
+    ///
+    /// <returns>
+    /// A ServiceCollection.
+    /// </returns>
+    protected override ServiceCollection ConfigureServices(ServiceCollection services)
+    {
+        base.ConfigureServices(services);
+
+        services.Configure<ApplicationSettings>(Manager);
+        Manager.ConfigureValidator(new ApplicationSettingsValidator());
+
+        return services;
     }
 }
