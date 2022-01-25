@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="FluiTec.AppFx.Console" Version="1.0.32"></PackageReference>
+    <PackageReference Include="FluiTec.AppFx.Console" Version="1.0.33"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>
