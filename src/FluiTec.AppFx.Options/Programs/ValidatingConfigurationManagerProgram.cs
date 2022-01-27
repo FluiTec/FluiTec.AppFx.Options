@@ -5,16 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace FluiTec.AppFx.Options.Programs;
 
 /// <summary>
-/// A validating configuration manager program.
+///     A validating configuration manager program.
 /// </summary>
 public abstract class ValidatingConfigurationManagerProgram : ConfigurationManagerProgram
 {
     /// <summary>
-    /// Gets service provider.
+    ///     Gets service provider.
     /// </summary>
-    ///
     /// <returns>
-    /// The service provider.
+    ///     The service provider.
     /// </returns>
     protected override ServiceProvider GetServiceProvider()
     {
@@ -24,13 +23,11 @@ public abstract class ValidatingConfigurationManagerProgram : ConfigurationManag
     }
 
     /// <summary>
-    /// Gets configuration manager.
+    ///     Gets configuration manager.
     /// </summary>
-    ///
     /// <param name="configurationRoot">    The arguments configuration root. </param>
-    ///
     /// <returns>
-    /// The configuration manager.
+    ///     The configuration manager.
     /// </returns>
     protected override ValidatingConfigurationManager GetConfigurationManager(IConfigurationRoot configurationRoot)
     {

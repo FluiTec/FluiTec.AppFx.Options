@@ -1,6 +1,5 @@
-namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions;
+
+public class InheritedSecretOption : SecretOption
 {
-    public class InheritedSecretOption : SecretOption
-    {
-    }
 }

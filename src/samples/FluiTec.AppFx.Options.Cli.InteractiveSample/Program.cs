@@ -24,13 +24,11 @@ internal class Program : ValidatingConfigurationManagerProgram
     }
 
     /// <summary>
-    /// Configures the given configuration builder.
+    ///     Configures the given configuration builder.
     /// </summary>
-    ///
     /// <param name="configurationBuilder"> The configuration builder. </param>
-    ///
     /// <returns>
-    /// An IConfigurationBuilder.
+    ///     An IConfigurationBuilder.
     /// </returns>
     protected override IConfigurationBuilder Configure(IConfigurationBuilder configurationBuilder)
     {
@@ -40,13 +38,11 @@ internal class Program : ValidatingConfigurationManagerProgram
     }
 
     /// <summary>
-    /// Configure services.
+    ///     Configure services.
     /// </summary>
-    ///
     /// <param name="services"> The services. </param>
-    ///
     /// <returns>
-    /// A ServiceCollection.
+    ///     A ServiceCollection.
     /// </returns>
     protected override ServiceCollection ConfigureServices(ServiceCollection services)
     {

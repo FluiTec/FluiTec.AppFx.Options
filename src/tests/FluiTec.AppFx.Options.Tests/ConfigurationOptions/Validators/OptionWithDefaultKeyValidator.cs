@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions.Validators
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions.Validators;
+
+public class OptionWithDefaultKeyValidator : AbstractValidator<OptionWithDefaultKey>
 {
-    public class OptionWithDefaultKeyValidator : AbstractValidator<OptionWithDefaultKey>
+    public OptionWithDefaultKeyValidator()
     {
-        public OptionWithDefaultKeyValidator()
-        {
-            RuleFor(setting => setting.StringSetting).NotEmpty().Length(1, 15);
-        }
+        RuleFor(setting => setting.StringSetting).NotEmpty().Length(1, 15);
     }
 }

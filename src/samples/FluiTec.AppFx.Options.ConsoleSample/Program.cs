@@ -26,7 +26,7 @@ internal class Program : ValidatingConfigurationManagerProgram
             var singleton = sp.GetService<IOptions<ApplicationSettings>>();
             if (singleton != null)
                 System.Console.WriteLine($"Singleton using IOptions: {singleton.Value.Name}");
-            
+
             var scoped = sp.CreateScope().ServiceProvider.GetService<IOptionsSnapshot<ApplicationSettings>>();
             if (scoped != null)
                 System.Console.WriteLine($"Scoped using IOptionsSnapshot: {scoped.Value.Name}");
@@ -34,9 +34,8 @@ internal class Program : ValidatingConfigurationManagerProgram
     }
 
     /// <summary>
-    /// Writes a configuration file.
+    ///     Writes a configuration file.
     /// </summary>
-    ///
     /// <param name="path"> Full pathname of the file. </param>
     /// <param name="name"> The name. </param>
     private static void WriteConfigFile(string path, string name)
@@ -46,13 +45,11 @@ internal class Program : ValidatingConfigurationManagerProgram
     }
 
     /// <summary>
-    /// Configures the given configuration builder.
+    ///     Configures the given configuration builder.
     /// </summary>
-    ///
     /// <param name="configurationBuilder"> The configuration builder. </param>
-    ///
     /// <returns>
-    /// An IConfigurationBuilder.
+    ///     An IConfigurationBuilder.
     /// </returns>
     protected override IConfigurationBuilder Configure(IConfigurationBuilder configurationBuilder)
     {
@@ -61,13 +58,11 @@ internal class Program : ValidatingConfigurationManagerProgram
     }
 
     /// <summary>
-    /// Configure services.
+    ///     Configure services.
     /// </summary>
-    ///
     /// <param name="services"> The services. </param>
-    ///
     /// <returns>
-    /// A ServiceCollection.
+    ///     A ServiceCollection.
     /// </returns>
     protected override ServiceCollection ConfigureServices(ServiceCollection services)
     {

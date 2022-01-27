@@ -1,7 +1,6 @@
-namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions;
+
+public class NestingOption
 {
-    public class NestingOption
-    {
-        public OptionWithDefaultKey Test { get; set; }
-    }
+    public OptionWithDefaultKey Test { get; set; }
 }

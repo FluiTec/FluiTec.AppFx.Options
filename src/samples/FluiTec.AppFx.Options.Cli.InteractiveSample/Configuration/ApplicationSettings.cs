@@ -1,19 +1,18 @@
 ﻿using FluentValidation;
 using FluiTec.AppFx.Options.Attributes;
 
-namespace FluiTec.AppFx.Options.Cli.InteractiveSample.Configuration
-{
-    [ConfigurationKey("AppSettings")]
-    public class ApplicationSettings
-    {
-        public string Name { get; set; }
-    }
+namespace FluiTec.AppFx.Options.Cli.InteractiveSample.Configuration;
 
-    public class ApplicationSettingsValidator : AbstractValidator<ApplicationSettings>
+[ConfigurationKey("AppSettings")]
+public class ApplicationSettings
+{
+    public string Name { get; set; }
+}
+
+public class ApplicationSettingsValidator : AbstractValidator<ApplicationSettings>
+{
+    public ApplicationSettingsValidator()
     {
-        public ApplicationSettingsValidator()
-        {
-            RuleFor(setting => setting.Name).NotEmpty().Length(1, 15);
-        }
+        RuleFor(setting => setting.Name).NotEmpty().Length(1, 15);
     }
 }

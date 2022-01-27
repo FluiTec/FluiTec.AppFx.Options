@@ -1,7 +1,6 @@
-namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions
+namespace FluiTec.AppFx.Options.Tests.ConfigurationOptions;
+
+public class InheritedOption : OptionWithDefaultKey
 {
-    public class InheritedOption : OptionWithDefaultKey
-    {
-        public string StringSetting2 { get; set; }
-    }
+    public string StringSetting2 { get; set; }
 }
