@@ -38,7 +38,6 @@ public class OptionsConsoleItem : SelectConsoleItem
         {
             if (value != Value)
             {
-                // TODO: use Presenter.ErrorText
                 AnsiConsole.MarkupLine($"The {Presenter.HighlightText("new value")} is \"{value}\"");
                 AnsiConsole.MarkupLine(Module.EditSetting(Key, value)
                     ? $"The {Presenter.HighlightText("new value")} was saved"
